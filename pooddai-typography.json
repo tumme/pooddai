@@ -1,0 +1,168 @@
+{
+  "typography": {
+    "font": {
+      "family": {
+        "value": "IBM Plex Sans Thai",
+        "type": "fontFamilies"
+      }
+    },
+    "text": {
+      "displayLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "57",
+          "lineHeight": "112%",
+          "letterSpacing": "-0.25px"
+        },
+        "type": "typography"
+      },
+      "displayMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "45",
+          "lineHeight": "116%",
+          "letterSpacing": "0.0px"
+        },
+        "type": "typography"
+      },
+      "displaySmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "36",
+          "lineHeight": "115%",
+          "letterSpacing": "-1.0px"
+        },
+        "type": "typography"
+      },
+      "headlineLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "32",
+          "lineHeight": "120%",
+          "letterSpacing": "-0.8px"
+        },
+        "type": "typography"
+      },
+      "headlineMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "28",
+          "lineHeight": "129%",
+          "letterSpacing": "-0.5px"
+        },
+        "type": "typography"
+      },
+      "headlineSmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "24",
+          "lineHeight": "133%",
+          "letterSpacing": "-0.3px"
+        },
+        "type": "typography"
+      },
+      "titleLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "22",
+          "lineHeight": "127%",
+          "letterSpacing": "-0.3px"
+        },
+        "type": "typography"
+      },
+      "titleMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "16",
+          "lineHeight": "150%",
+          "letterSpacing": "0.15px"
+        },
+        "type": "typography"
+      },
+      "titleSmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "14",
+          "lineHeight": "143%",
+          "letterSpacing": "0.1px"
+        },
+        "type": "typography"
+      },
+      "bodyLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "16",
+          "lineHeight": "145%",
+          "letterSpacing": "0.5px"
+        },
+        "type": "typography"
+      },
+      "bodyMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "14",
+          "lineHeight": "145%",
+          "letterSpacing": "0.25px"
+        },
+        "type": "typography"
+      },
+      "bodySmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "12",
+          "lineHeight": "140%",
+          "letterSpacing": "0.4px"
+        },
+        "type": "typography"
+      },
+      "labelLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "14",
+          "lineHeight": "143%",
+          "letterSpacing": "0.1px"
+        },
+        "type": "typography"
+      },
+      "labelMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "12",
+          "lineHeight": "133%",
+          "letterSpacing": "0.5px"
+        },
+        "type": "typography"
+      },
+      "labelSmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "SemiBold",
+          "fontSize": "11",
+          "lineHeight": "145%",
+          "letterSpacing": "0.2px"
+        },
+        "type": "typography"
+      }
+    }
+  },
+  "$themes": [],
+  "$metadata": {
+    "tokenSetOrder": [
+      "typography"
+    ]
+  }
+}

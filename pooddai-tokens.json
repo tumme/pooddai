@@ -1,0 +1,429 @@
+{
+  "core": {
+    "font": {
+      "family": {
+        "value": "IBM Plex Sans Thai",
+        "type": "fontFamilies"
+      }
+    },
+    "brand": {
+      "orange": {
+        "value": "#FB6D3A",
+        "type": "color"
+      },
+      "amber": {
+        "value": "#FFC93E",
+        "type": "color"
+      },
+      "blue": {
+        "value": "#6C9BF6",
+        "type": "color"
+      },
+      "mint": {
+        "value": "#9FE3B0",
+        "type": "color"
+      },
+      "peach": {
+        "value": "#FFD5C4",
+        "type": "color"
+      },
+      "lilac": {
+        "value": "#C8BDF7",
+        "type": "color"
+      },
+      "rose": {
+        "value": "#FFB3B3",
+        "type": "color"
+      }
+    },
+    "status": {
+      "good": {
+        "value": "#3FAE6A",
+        "type": "color"
+      },
+      "fair": {
+        "value": "#EE9A26",
+        "type": "color"
+      },
+      "poor": {
+        "value": "#E5484D",
+        "type": "color"
+      }
+    },
+    "language": {
+      "english": {
+        "value": "#6C9BF6",
+        "type": "color"
+      },
+      "hebrew": {
+        "value": "#C8BDF7",
+        "type": "color"
+      },
+      "mandarinTw": {
+        "value": "#FB6D3A",
+        "type": "color"
+      },
+      "mandarinCn": {
+        "value": "#FFB3B3",
+        "type": "color"
+      }
+    },
+    "radius": {
+      "card": {
+        "value": "26",
+        "type": "borderRadius"
+      },
+      "inner": {
+        "value": "18",
+        "type": "borderRadius"
+      },
+      "pill": {
+        "value": "999",
+        "type": "borderRadius"
+      }
+    },
+    "text": {
+      "displayLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "57",
+          "lineHeight": "112%",
+          "letterSpacing": "-0.25px"
+        },
+        "type": "typography"
+      },
+      "displayMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "45",
+          "lineHeight": "116%",
+          "letterSpacing": "0.0px"
+        },
+        "type": "typography"
+      },
+      "displaySmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "36",
+          "lineHeight": "115%",
+          "letterSpacing": "-1.0px"
+        },
+        "type": "typography"
+      },
+      "headlineLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "32",
+          "lineHeight": "120%",
+          "letterSpacing": "-0.8px"
+        },
+        "type": "typography"
+      },
+      "headlineMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "28",
+          "lineHeight": "129%",
+          "letterSpacing": "-0.5px"
+        },
+        "type": "typography"
+      },
+      "headlineSmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "24",
+          "lineHeight": "133%",
+          "letterSpacing": "-0.3px"
+        },
+        "type": "typography"
+      },
+      "titleLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "22",
+          "lineHeight": "127%",
+          "letterSpacing": "-0.3px"
+        },
+        "type": "typography"
+      },
+      "titleMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "16",
+          "lineHeight": "150%",
+          "letterSpacing": "0.15px"
+        },
+        "type": "typography"
+      },
+      "titleSmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "14",
+          "lineHeight": "143%",
+          "letterSpacing": "0.1px"
+        },
+        "type": "typography"
+      },
+      "bodyLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "16",
+          "lineHeight": "145%",
+          "letterSpacing": "0.5px"
+        },
+        "type": "typography"
+      },
+      "bodyMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "14",
+          "lineHeight": "145%",
+          "letterSpacing": "0.25px"
+        },
+        "type": "typography"
+      },
+      "bodySmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "12",
+          "lineHeight": "140%",
+          "letterSpacing": "0.4px"
+        },
+        "type": "typography"
+      },
+      "labelLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "14",
+          "lineHeight": "143%",
+          "letterSpacing": "0.1px"
+        },
+        "type": "typography"
+      },
+      "labelMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "12",
+          "lineHeight": "133%",
+          "letterSpacing": "0.5px"
+        },
+        "type": "typography"
+      },
+      "labelSmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "SemiBold",
+          "fontSize": "11",
+          "lineHeight": "145%",
+          "letterSpacing": "0.2px"
+        },
+        "type": "typography"
+      }
+    }
+  },
+  "light": {
+    "surface": {
+      "ground": {
+        "value": "#F4F1ED",
+        "type": "color"
+      },
+      "card": {
+        "value": "#FFFFFF",
+        "type": "color"
+      },
+      "line": {
+        "value": "#DFD8D0",
+        "type": "color"
+      }
+    },
+    "content": {
+      "primary": {
+        "value": "#1B1A19",
+        "type": "color"
+      },
+      "secondary": {
+        "value": "#6F6A65",
+        "type": "color"
+      },
+      "onTint": {
+        "value": "#1B1A19",
+        "type": "color"
+      }
+    },
+    "tint": {
+      "1": {
+        "value": "#FFE08A",
+        "type": "color"
+      },
+      "2": {
+        "value": "#BBD3FB",
+        "type": "color"
+      },
+      "3": {
+        "value": "#FFCBB8",
+        "type": "color"
+      },
+      "4": {
+        "value": "#C3EFCE",
+        "type": "color"
+      },
+      "5": {
+        "value": "#DCD3FB",
+        "type": "color"
+      },
+      "6": {
+        "value": "#FFD1D1",
+        "type": "color"
+      }
+    },
+    "tintIcon": {
+      "1": {
+        "value": "#AF891D",
+        "type": "color"
+      },
+      "2": {
+        "value": "#1D54AF",
+        "type": "color"
+      },
+      "3": {
+        "value": "#AF441D",
+        "type": "color"
+      },
+      "4": {
+        "value": "#1DAF41",
+        "type": "color"
+      },
+      "5": {
+        "value": "#3E1DAF",
+        "type": "color"
+      },
+      "6": {
+        "value": "#AF1D1D",
+        "type": "color"
+      }
+    }
+  },
+  "dark": {
+    "surface": {
+      "ground": {
+        "value": "#17151A",
+        "type": "color"
+      },
+      "card": {
+        "value": "#232027",
+        "type": "color"
+      },
+      "line": {
+        "value": "#3B3640",
+        "type": "color"
+      }
+    },
+    "content": {
+      "primary": {
+        "value": "#F3EFEA",
+        "type": "color"
+      },
+      "secondary": {
+        "value": "#9C958D",
+        "type": "color"
+      },
+      "onTint": {
+        "value": "#1B1A19",
+        "type": "color"
+      }
+    },
+    "tint": {
+      "1": {
+        "value": "#C3AB6D",
+        "type": "color"
+      },
+      "2": {
+        "value": "#90A2C1",
+        "type": "color"
+      },
+      "3": {
+        "value": "#C39C8F",
+        "type": "color"
+      },
+      "4": {
+        "value": "#96B69F",
+        "type": "color"
+      },
+      "5": {
+        "value": "#A9A2C1",
+        "type": "color"
+      },
+      "6": {
+        "value": "#C3A0A1",
+        "type": "color"
+      }
+    },
+    "tintIcon": {
+      "1": {
+        "value": "#AF891D",
+        "type": "color"
+      },
+      "2": {
+        "value": "#1D54AF",
+        "type": "color"
+      },
+      "3": {
+        "value": "#AF441D",
+        "type": "color"
+      },
+      "4": {
+        "value": "#1DAF41",
+        "type": "color"
+      },
+      "5": {
+        "value": "#3E1DAF",
+        "type": "color"
+      },
+      "6": {
+        "value": "#AF1D1D",
+        "type": "color"
+      }
+    }
+  },
+  "$themes": [
+    {
+      "id": "light",
+      "name": "Light",
+      "selectedTokenSets": {
+        "core": "source",
+        "light": "enabled"
+      },
+      "$figmaStyleReferences": {}
+    },
+    {
+      "id": "dark",
+      "name": "Dark",
+      "selectedTokenSets": {
+        "core": "source",
+        "dark": "enabled"
+      },
+      "$figmaStyleReferences": {}
+    }
+  ],
+  "$metadata": {
+    "tokenSetOrder": [
+      "core",
+      "light",
+      "dark"
+    ]
+  }
+}

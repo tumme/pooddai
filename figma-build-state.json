@@ -1,0 +1,42 @@
+{
+  "runId": "pooddai-ds-2026-08-22",
+  "fileKey": "ALfGedIAHiawMswO7hMvwa",
+  "fileUrl": "https://www.figma.com/design/ALfGedIAHiawMswO7hMvwa",
+  "source": "lib/theme/app_theme.dart (อ่านค่าจากธีมตอนรันจริง)",
+  "phase": "phase1-partial",
+  "completedSteps": [
+    "P0.a",
+    "P0.b",
+    "P0.d",
+    "P0.e",
+    "P1.a",
+    "P1.b",
+    "P1.c",
+    "P1.d",
+    "P1.e"
+  ],
+  "blocked": {
+    "P1.f-textStyles": "โควตา Figma MCP หมด — Starter plan ได้ 20 tool call ต่อเดือน ทำต่อผ่าน MCP ไม่ได้จนขึ้นเดือนใหม่หรืออัปเป็น Pro + seat Full/Dev",
+    "P2-foundationsPages": "ยังไม่ได้เริ่ม",
+    "twoModeCollection": "แผน Starter จำกัดคอลเลกชันละ 1 โหมด จึงแยกเป็น Color กับ Color Dark"
+  },
+  "entities": {
+    "collections": {
+      "Primitives": "VariableCollectionId:2:2",
+      "Color": "VariableCollectionId:4:2",
+      "Color Dark": "VariableCollectionId:4:32",
+      "Radius": "VariableCollectionId:4:62"
+    },
+    "variableCounts": {
+      "Primitives": 38,
+      "Color": 29,
+      "Color Dark": 29,
+      "Radius": 3
+    }
+  },
+  "resumePrompt": "กำลังทำ design system ต่อ Run ID: pooddai-ds-2026-08-22 โหลด figma-generate-library แล้วทำต่อจาก P1.f (text styles) ในไฟล์ ALfGedIAHiawMswO7hMvwa",
+  "workaround": {
+    "textStyles": "นำเข้า docs/pooddai-typography.json ผ่านปลั๊กอิน Tokens Studio (ไม่ใช้โควตา MCP)",
+    "why": "ปลั๊กอินรันในเบราว์เซอร์ ไม่ผ่าน MCP server"
+  }
+}

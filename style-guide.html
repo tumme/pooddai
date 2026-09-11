@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>พูดได้ · Design Tokens</title>
+<meta name="description" content="สีและตัวอักษรทั้งหมดของแอปพูดได้ พร้อมค่าที่ก๊อปไปตั้งใน Figma ได้ตรงๆ">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#F4F1ED; --surface:#FFFFFF; --surface-2:#FBF9F7;
+  --ink:#1B1A19; --ink-soft:#6F6A65; --line:#E2DBD3;
+  --accent:#FB6D3A; --accent-wash:#FFD5C4;
+  --good:#3FAE6A; --fair:#EE9A26; --poor:#E5484D;
+  --shadow:0 6px 18px rgba(27,26,25,.07);
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#17151A; --surface:#232027; --surface-2:#1D1A21;
+    --ink:#F3EFEA; --ink-soft:#9C958D; --line:#3B3640; --accent-wash:#43281D;
+    --shadow:0 6px 18px rgba(0,0,0,.32);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#17151A; --surface:#232027; --surface-2:#1D1A21;
+  --ink:#F3EFEA; --ink-soft:#9C958D; --line:#3B3640; --accent-wash:#43281D;
+  --shadow:0 6px 18px rgba(0,0,0,.32);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:'IBM Plex Sans Thai','Noto Sans Thai',system-ui,sans-serif;
+  font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1100px; margin:0 auto; padding:0 22px}
+h1,h2,h3{margin:0; text-wrap:balance}
+h1{font-size:clamp(30px,4.4vw,44px); font-weight:700; letter-spacing:-1px; line-height:1.14}
+h2{font-size:clamp(23px,3vw,30px); font-weight:700; letter-spacing:-.6px}
+h3{font-size:18px; font-weight:700; letter-spacing:-.3px}
+p{margin:0}
+code,.mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px; border-radius:6px}
+.eyebrow{font-family:var(--mono); font-size:11.5px; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent)}
+.muted{color:var(--ink-soft)}
+
+/* หัวเรื่อง */
+.topbar{position:sticky; top:0; z-index:30; background:color-mix(in srgb,var(--ground) 88%,transparent); backdrop-filter:blur(14px); border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex; align-items:center; gap:22px; height:58px}
+.topbar b{font-weight:700; letter-spacing:-.4px; white-space:nowrap}
+.topbar nav{margin-inline-start:auto; display:flex; gap:20px; font-size:14.5px; color:var(--ink-soft); overflow-x:auto}
+.topbar nav a{text-decoration:none; white-space:nowrap}
+.topbar nav a:hover{color:var(--accent)}
+
+header.page{padding:56px 0 30px}
+header.page .lead{max-width:62ch; color:var(--ink-soft); margin-top:14px; font-size:17px}
+.source{
+  margin-top:22px; display:inline-flex; align-items:center; gap:10px; flex-wrap:wrap;
+  font-family:var(--mono); font-size:13px; color:var(--ink-soft);
+  background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:10px 15px;
+}
+
+section{padding:44px 0; border-top:1px solid var(--line)}
+.sec-head{display:flex; flex-direction:column; gap:10px; margin-bottom:28px; max-width:66ch}
+.sub{margin:34px 0 16px; display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+.sub h3{font-size:17px}
+.sub span{font-size:14px; color:var(--ink-soft)}
+
+/* กล่องแนะนำการแปลงค่าไป Figma */
+.note{
+  background:var(--accent-wash); border-radius:20px; padding:22px 24px;
+  display:flex; flex-direction:column; gap:12px; color:#1B1A19;
+}
+.note h3{color:#1B1A19}
+.note table{width:100%; border-collapse:collapse; font-size:14.5px}
+.note td{padding:7px 0; border-bottom:1px solid rgba(27,26,25,.14); vertical-align:top}
+.note td:first-child{width:44%; font-weight:600}
+.note tr:last-child td{border-bottom:none}
+.note code{background:rgba(27,26,25,.09); padding:1px 6px; border-radius:5px; font-size:13px}
+
+/* ตัวอย่างสี */
+.swatches{display:grid; grid-template-columns:repeat(auto-fill,minmax(186px,1fr)); gap:14px}
+.sw{
+  background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden;
+  box-shadow:var(--shadow); cursor:pointer; text-align:start; font:inherit; color:inherit;
+  padding:0; display:flex; flex-direction:column; transition:transform .15s ease;
+}
+.sw:hover{transform:translateY(-2px)}
+.sw .chip{height:76px; width:100%; display:block}
+.sw .meta{padding:11px 13px 13px; display:flex; flex-direction:column; gap:3px}
+.sw .nm{font-size:14px; font-weight:600; letter-spacing:-.2px}
+.sw .hex{font-family:var(--mono); font-size:13px; color:var(--ink-soft); text-transform:uppercase}
+.sw .use{font-size:12.5px; color:var(--ink-soft); line-height:1.45}
+.sw .dart{font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); opacity:.8}
+
+/* คู่สว่าง/มืด */
+.pairs{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px}
+.pair{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:14px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:10px}
+.pair .nm{font-size:14.5px; font-weight:600}
+.pair .duo{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.duo button{
+  font:inherit; color:inherit; text-align:start; cursor:pointer; padding:0;
+  border:1px solid var(--line); border-radius:11px; overflow:hidden; background:none;
+}
+.duo .chip{height:46px; display:block}
+.duo .lb{display:flex; justify-content:space-between; gap:6px; padding:6px 8px; font-size:11px; color:var(--ink-soft)}
+.duo .lb b{font-family:var(--mono); font-weight:500; text-transform:uppercase; color:var(--ink)}
+
+/* ตารางสเปก */
+.tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:16px; background:var(--surface); box-shadow:var(--shadow)}
+table.spec{border-collapse:collapse; width:100%; min-width:640px; font-size:14px}
+table.spec th,table.spec td{text-align:start; padding:11px 14px; border-bottom:1px solid var(--line); white-space:nowrap}
+table.spec thead th{font-family:var(--mono); font-size:11px; letter-spacing:1.1px; text-transform:uppercase; color:var(--ink-soft); font-weight:500}
+table.spec tbody tr:last-child td{border-bottom:none}
+table.spec td.k{font-family:var(--mono); font-weight:500}
+table.spec td.v{font-family:var(--mono); color:var(--ink-soft); text-transform:uppercase}
+.dot{display:inline-block; width:13px; height:13px; border-radius:4px; vertical-align:-2px; margin-inline-end:8px; border:1px solid rgba(128,128,128,.28)}
+
+/* ตัวอย่างตัวอักษร */
+.type-row{
+  display:grid; grid-template-columns:200px 1fr; gap:26px; align-items:baseline;
+  padding:22px 0; border-bottom:1px solid var(--line);
+}
+.type-row:last-child{border-bottom:none}
+@media (max-width:760px){.type-row{grid-template-columns:1fr; gap:10px}}
+.type-meta{display:flex; flex-direction:column; gap:3px}
+.type-meta .role{font-family:var(--mono); font-size:13.5px; font-weight:600}
+.type-meta .dim{font-family:var(--mono); font-size:12px; color:var(--ink-soft)}
+.type-meta .tagx{
+  align-self:flex-start; margin-top:5px; font-size:11px; padding:2px 8px; border-radius:999px;
+  background:var(--surface-2); border:1px solid var(--line); color:var(--ink-soft);
+}
+.sample{overflow-x:auto}
+.sample>span{display:block; white-space:nowrap}
+
+/* บล็อกโค้ด */
+.codeblock{position:relative; background:var(--surface); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow)}
+.codeblock pre{margin:0; padding:20px 22px; overflow-x:auto; font-family:var(--mono); font-size:12.5px; line-height:1.72}
+.copy{
+  position:absolute; top:12px; inset-inline-end:12px; font:inherit; font-size:12.5px; font-weight:600;
+  padding:6px 13px; border-radius:999px; border:1px solid var(--line);
+  background:var(--ground); color:var(--ink); cursor:pointer;
+}
+.copy:hover{border-color:var(--accent); color:var(--accent)}
+.copy.done{background:var(--good); border-color:var(--good); color:#fff}
+
+.toast{
+  position:fixed; inset-block-end:22px; inset-inline-start:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--ink); color:var(--ground); padding:11px 20px; border-radius:999px;
+  font-size:14px; font-weight:600; opacity:0; pointer-events:none; transition:all .22s ease; z-index:60;
+}
+.toast.on{opacity:1; transform:translateX(-50%) translateY(0)}
+
+footer{border-top:1px solid var(--line); padding:30px 0 50px; color:var(--ink-soft); font-size:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <b>พูดได้ · Design Tokens</b>
+    <nav>
+      <a href="#figma">แปลงไป Figma</a>
+      <a href="#color">สี</a>
+      <a href="#scheme">ColorScheme</a>
+      <a href="#type">ตัวอักษร</a>
+      <a href="#shape">รูปทรง</a>
+      <a href="#export">ส่งออก</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+
+<header class="page">
+  <p class="eyebrow">design tokens</p>
+  <h1>สีและตัวอักษรทั้งหมดของพูดได้</h1>
+  <p class="lead">
+    ทุกค่าในหน้านี้ดึงจากธีมที่แอปใช้จริงตอนรัน ไม่ได้พิมพ์ตามเอกสาร
+    ค่าตัวอักษรมาจากการอ่าน <code>Theme.of(context).textTheme</code> และสีพาสเทลโหมดมืดมาจากการเรียก
+    <code>tintAt()</code> จริง — ก๊อปไปตั้งเป็น Color Style กับ Text Style ใน Figma ได้ตรงๆ
+    <strong>แตะที่ช่องสีเพื่อคัดลอกรหัส</strong>
+  </p>
+  <p class="source">ที่มา: lib/theme/app_theme.dart · ฟอนต์: IBM Plex Sans Thai</p>
+</header>
+
+<!-- ═══ แปลงค่าไป Figma ═══ -->
+<section id="figma">
+  <div class="note">
+    <h3>ค่าจาก Flutter ตรงกับช่องไหนใน Figma</h3>
+    <table>
+      <tr><td>Font size (px)</td><td>ใส่ช่อง <code>Size</code> ได้ตรงๆ หน่วยเดียวกัน</td></tr>
+      <tr><td>Height (ตัวคูณ)</td><td>Figma ใช้ <code>Line height</code> เป็น % — คูณ 100 เช่น <code>1.45</code> → <code>145%</code></td></tr>
+      <tr><td>Letter spacing (px)</td><td>ใส่ช่อง <code>Letter spacing</code> เป็น px ค่าติดลบใส่ได้เลย</td></tr>
+      <tr><td>Font weight</td><td>400 = Regular · 500 = Medium · 600 = SemiBold · 700 = Bold</td></tr>
+      <tr><td><strong>น้ำหนัก 800 ในโค้ด</strong></td><td>IBM Plex Sans Thai หนาสุดที่ 700 — ใน Figma เลือก <code>Bold</code> ซึ่งเป็นน้ำหนักเดียวกับที่แอปเรนเดอร์ออกมาจริง</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ สี ═══ -->
+<section id="color">
+  <div class="sec-head">
+    <p class="eyebrow">01 · สี</p>
+    <h2>จานสี</h2>
+    <p class="muted">โทนสดใสอบอุ่น พื้นครีมไม่ใช่ขาวจ้า เพื่อให้การ์ดสีขาวลอยขึ้นมาได้เองโดยไม่ต้องใช้เงาหนัก</p>
+  </div>
+
+  <div class="sub"><h3>พื้นผิวและตัวอักษร</h3><span>โหมดสว่าง / โหมดมืด จับคู่กัน</span></div>
+  <div class="pairs">
+    <div class="pair"><span class="nm">พื้นหลังหลัก</span><div class="duo">
+      <button data-hex="#F4F1ED"><span class="chip" style="background:#F4F1ED"></span><span class="lb">สว่าง<b>F4F1ED</b></span></button>
+      <button data-hex="#17151A"><span class="chip" style="background:#17151A"></span><span class="lb">มืด<b>17151A</b></span></button>
+    </div><span class="dart">cream / darkBg</span></div>
+
+    <div class="pair"><span class="nm">พื้นการ์ด</span><div class="duo">
+      <button data-hex="#FFFFFF"><span class="chip" style="background:#FFFFFF"></span><span class="lb">สว่าง<b>FFFFFF</b></span></button>
+      <button data-hex="#232027"><span class="chip" style="background:#232027"></span><span class="lb">มืด<b>232027</b></span></button>
+    </div><span class="dart">surface / darkSurface</span></div>
+
+    <div class="pair"><span class="nm">ตัวอักษรหลัก</span><div class="duo">
+      <button data-hex="#1B1A19"><span class="chip" style="background:#1B1A19"></span><span class="lb">สว่าง<b>1B1A19</b></span></button>
+      <button data-hex="#F3EFEA"><span class="chip" style="background:#F3EFEA"></span><span class="lb">มืด<b>F3EFEA</b></span></button>
+    </div><span class="dart">ink / darkInk</span></div>
+
+    <div class="pair"><span class="nm">ตัวอักษรรอง</span><div class="duo">
+      <button data-hex="#6F6A65"><span class="chip" style="background:#6F6A65"></span><span class="lb">สว่าง<b>6F6A65</b></span></button>
+      <button data-hex="#9C958D"><span class="chip" style="background:#9C958D"></span><span class="lb">มืด<b>9C958D</b></span></button>
+    </div><span class="dart">inkSoft / darkInkSoft</span></div>
+
+    <div class="pair"><span class="nm">เส้นคั่น</span><div class="duo">
+      <button data-hex="#DFD8D0"><span class="chip" style="background:#DFD8D0"></span><span class="lb">สว่าง<b>DFD8D0</b></span></button>
+      <button data-hex="#3B3640"><span class="chip" style="background:#3B3640"></span><span class="lb">มืด<b>3B3640</b></span></button>
+    </div><span class="dart">outlineVariant</span></div>
+  </div>
+
+  <div class="sub"><h3>สีเน้น</h3><span>ส้มคือสีหลักที่เดียว ที่เหลือใช้แยกประเภทเนื้อหา</span></div>
+  <div class="swatches">
+    <button class="sw" data-hex="#FB6D3A"><span class="chip" style="background:#FB6D3A"></span><span class="meta"><span class="nm">ส้ม</span><span class="hex">#FB6D3A</span><span class="use">ปุ่มหลัก ปุ่มอัดเสียง คำที่ไฮไลต์</span><span class="dart">PoodColors.orange</span></span></button>
+    <button class="sw" data-hex="#FFC93E"><span class="chip" style="background:#FFC93E"></span><span class="meta"><span class="nm">เหลืองอำพัน</span><span class="hex">#FFC93E</span><span class="use">สีรอง แถบความคล่อง</span><span class="dart">PoodColors.amber</span></span></button>
+    <button class="sw" data-hex="#6C9BF6"><span class="chip" style="background:#6C9BF6"></span><span class="meta"><span class="nm">ฟ้า</span><span class="hex">#6C9BF6</span><span class="use">สีที่สาม สีประจำภาษาอังกฤษ</span><span class="dart">PoodColors.blue</span></span></button>
+    <button class="sw" data-hex="#9FE3B0"><span class="chip" style="background:#9FE3B0"></span><span class="meta"><span class="nm">เขียวมิ้นต์</span><span class="hex">#9FE3B0</span><span class="use">สถานะเชิงบวกแบบอ่อน</span><span class="dart">PoodColors.mint</span></span></button>
+    <button class="sw" data-hex="#FFD5C4"><span class="chip" style="background:#FFD5C4"></span><span class="meta"><span class="nm">พีช</span><span class="hex">#FFD5C4</span><span class="use">พื้นอ่อนของสีหลัก (primaryContainer)</span><span class="dart">PoodColors.peach</span></span></button>
+    <button class="sw" data-hex="#C8BDF7"><span class="chip" style="background:#C8BDF7"></span><span class="meta"><span class="nm">ม่วงไลแลค</span><span class="hex">#C8BDF7</span><span class="use">สีประจำภาษาฮีบรู</span><span class="dart">PoodColors.lilac</span></span></button>
+    <button class="sw" data-hex="#FFB3B3"><span class="chip" style="background:#FFB3B3"></span><span class="meta"><span class="nm">ชมพูโรส</span><span class="hex">#FFB3B3</span><span class="use">สีประจำภาษาจีนแผ่นดินใหญ่</span><span class="dart">PoodColors.rose</span></span></button>
+  </div>
+
+  <div class="sub"><h3>สีบอกผล</h3><span>ใช้ร่วมกันทั้งคะแนน วรรณยุกต์ และการเทียบรายคำ</span></div>
+  <div class="swatches">
+    <button class="sw" data-hex="#3FAE6A"><span class="chip" style="background:#3FAE6A"></span><span class="meta"><span class="nm">ดี</span><span class="hex">#3FAE6A</span><span class="use">คะแนน 85 ขึ้นไป · คำที่ตรงเป๊ะ</span><span class="dart">PoodColors.good</span></span></button>
+    <button class="sw" data-hex="#EE9A26"><span class="chip" style="background:#EE9A26"></span><span class="meta"><span class="nm">พอใช้</span><span class="hex">#EE9A26</span><span class="use">คะแนน 65–84 · คำที่ใกล้เคียง</span><span class="dart">PoodColors.fair</span></span></button>
+    <button class="sw" data-hex="#E5484D"><span class="chip" style="background:#E5484D"></span><span class="meta"><span class="nm">ต้องแก้</span><span class="hex">#E5484D</span><span class="use">ต่ำกว่า 65 · คำที่ผิดหรือหายไป</span><span class="dart">PoodColors.poor</span></span></button>
+  </div>
+
+  <div class="sub"><h3>การ์ดพาสเทล</h3><span>ไล่วนตามลำดับบทเรียน · โหมดมืดหรี่เข้าหาพื้น 26% · ไอคอนบนการ์ดใช้สีเข้มของเฉดเดียวกัน</span></div>
+  <div class="tablewrap">
+    <table class="spec">
+      <thead><tr><th>ลำดับ</th><th>สว่าง</th><th>มืด</th><th>ไอคอนบนการ์ด</th><th>ตัวอักษรบนการ์ด</th></tr></thead>
+      <tbody>
+        <tr><td class="k">tints[0]</td><td class="v"><span class="dot" style="background:#FFE08A"></span>#FFE08A</td><td class="v"><span class="dot" style="background:#C3AB6D"></span>#C3AB6D</td><td class="v"><span class="dot" style="background:#AF891D"></span>#AF891D</td><td class="v"><span class="dot" style="background:#1B1A19"></span>#1B1A19</td></tr>
+        <tr><td class="k">tints[1]</td><td class="v"><span class="dot" style="background:#BBD3FB"></span>#BBD3FB</td><td class="v"><span class="dot" style="background:#90A2C1"></span>#90A2C1</td><td class="v"><span class="dot" style="background:#1D54AF"></span>#1D54AF</td><td class="v"><span class="dot" style="background:#1B1A19"></span>#1B1A19</td></tr>
+        <tr><td class="k">tints[2]</td><td class="v"><span class="dot" style="background:#FFCBB8"></span>#FFCBB8</td><td class="v"><span class="dot" style="background:#C39C8F"></span>#C39C8F</td><td class="v"><span class="dot" style="background:#AF441D"></span>#AF441D</td><td class="v"><span class="dot" style="background:#1B1A19"></span>#1B1A19</td></tr>
+        <tr><td class="k">tints[3]</td><td class="v"><span class="dot" style="background:#C3EFCE"></span>#C3EFCE</td><td class="v"><span class="dot" style="background:#96B69F"></span>#96B69F</td><td class="v"><span class="dot" style="background:#1DAF41"></span>#1DAF41</td><td class="v"><span class="dot" style="background:#1B1A19"></span>#1B1A19</td></tr>
+        <tr><td class="k">tints[4]</td><td class="v"><span class="dot" style="background:#DCD3FB"></span>#DCD3FB</td><td class="v"><span class="dot" style="background:#A9A2C1"></span>#A9A2C1</td><td class="v"><span class="dot" style="background:#3E1DAF"></span>#3E1DAF</td><td class="v"><span class="dot" style="background:#1B1A19"></span>#1B1A19</td></tr>
+        <tr><td class="k">tints[5]</td><td class="v"><span class="dot" style="background:#FFD1D1"></span>#FFD1D1</td><td class="v"><span class="dot" style="background:#C3A0A1"></span>#C3A0A1</td><td class="v"><span class="dot" style="background:#AF1D1D"></span>#AF1D1D</td><td class="v"><span class="dot" style="background:#1B1A19"></span>#1B1A19</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub"><h3>สีประจำภาษา</h3><span>ให้จำภาษาด้วยสีได้โดยไม่ต้องอ่านตัวหนังสือ</span></div>
+  <div class="swatches">
+    <button class="sw" data-hex="#6C9BF6"><span class="chip" style="background:#6C9BF6"></span><span class="meta"><span class="nm">อังกฤษ</span><span class="hex">#6C9BF6</span><span class="dart">languageColor(english)</span></span></button>
+    <button class="sw" data-hex="#C8BDF7"><span class="chip" style="background:#C8BDF7"></span><span class="meta"><span class="nm">ฮีบรู</span><span class="hex">#C8BDF7</span><span class="dart">languageColor(hebrew)</span></span></button>
+    <button class="sw" data-hex="#FB6D3A"><span class="chip" style="background:#FB6D3A"></span><span class="meta"><span class="nm">จีนไต้หวัน</span><span class="hex">#FB6D3A</span><span class="dart">languageColor(mandarin)</span></span></button>
+    <button class="sw" data-hex="#FFB3B3"><span class="chip" style="background:#FFB3B3"></span><span class="meta"><span class="nm">จีนแผ่นดินใหญ่</span><span class="hex">#FFB3B3</span><span class="dart">languageColor(mandarinCn)</span></span></button>
+  </div>
+</section>
+
+<!-- ═══ ColorScheme ═══ -->
+<section id="scheme">
+  <div class="sec-head">
+    <p class="eyebrow">02 · colorscheme</p>
+    <h2>ค่าที่ Material ใช้จริง</h2>
+    <p class="muted">ถ้าจะทำคอมโพเนนต์ใน Figma ให้ตรงกับของจริง ใช้ตารางนี้ — เป็นค่าที่วิดเจ็ตทุกตัวดึงไปใช้</p>
+  </div>
+  <div class="tablewrap">
+    <table class="spec">
+      <thead><tr><th>Role</th><th>สว่าง</th><th>มืด</th></tr></thead>
+      <tbody id="schemeBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ ตัวอักษร ═══ -->
+<section id="type">
+  <div class="sec-head">
+    <p class="eyebrow">03 · ตัวอักษร</p>
+    <h2>IBM Plex Sans Thai</h2>
+    <p class="muted">
+      ฟอนต์เดียวทั้งแอป ครอบคลุมทั้งชุดไทยและละตินในไฟล์เดียว คำอังกฤษที่ปนในประโยคไทยจึงไม่เด้งเป็นอีกฟอนต์กลางประโยค
+      น้ำหนักที่ฝังมาในแอปคือ 400 · 500 · 600 · 700 — อักษรฮีบรูและจีนไม่มีในฟอนต์นี้ ตกไปใช้ฟอนต์ระบบ
+    </p>
+  </div>
+  <div id="typeRows"></div>
+</section>
+
+<!-- ═══ รูปทรง ═══ -->
+<section id="shape">
+  <div class="sec-head">
+    <p class="eyebrow">04 · รูปทรงและเงา</p>
+    <h2>ความมนกับเงา</h2>
+    <p class="muted">ใส่มาเพื่อให้ตั้ง Effect Style กับ Corner radius ใน Figma ได้ครบชุดในที่เดียว</p>
+  </div>
+  <div class="tablewrap">
+    <table class="spec">
+      <thead><tr><th>โทเคน</th><th>ค่า</th><th>ใช้กับ</th></tr></thead>
+      <tbody>
+        <tr><td class="k">PoodRadii.card</td><td class="v">26 px</td><td>การ์ดทุกใบ ListTile แผ่นล่าง</td></tr>
+        <tr><td class="k">PoodRadii.inner</td><td class="v">18 px</td><td>กล่องซ้อนในการ์ด snackbar</td></tr>
+        <tr><td class="k">PoodRadii.pill</td><td class="v">999 px</td><td>ปุ่มทุกชนิด ชิป แถบความคืบหน้า</td></tr>
+        <tr><td class="k">poodGlow()</td><td class="v">y+10 · blur 24 · สีนั้น 35%</td><td>เงาใต้ปุ่มอัดเสียง</td></tr>
+        <tr><td class="k">ปุ่มหลัก</td><td class="v">สูง 52 px · แนวนอน 22 px</td><td>FilledButton</td></tr>
+        <tr><td class="k">ปุ่มรอง</td><td class="v">สูง 48 px · แนวนอน 18 px</td><td>OutlinedButton</td></tr>
+        <tr><td class="k">แถบความคืบหน้า</td><td class="v">หนา 8 px</td><td>LinearProgressIndicator</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ ส่งออก ═══ -->
+<section id="export">
+  <div class="sec-head">
+    <p class="eyebrow">05 · ส่งออก</p>
+    <h2>ก๊อปไปใช้ต่อ</h2>
+    <p class="muted">
+      JSON ด้านล่างเป็นรูปแบบของปลั๊กอิน Tokens Studio โดยเฉพาะ แยกเป็นสามชุด —
+      <code>core</code> (สีแบรนด์ สีบอกผล ตัวอักษร ความมน) กับ <code>light</code> และ <code>dark</code>
+      ที่สลับกันตามโหมด ไฟล์เดียวกันนี้อยู่ที่ <code>docs/pooddai-tokens.json</code> เลือกอัปโหลดไฟล์แทนการก๊อปได้
+    </p>
+  </div>
+
+  <div class="note" style="margin-bottom:26px">
+    <h3>นำเข้า Figma ยังไง</h3>
+    <table>
+      <tr><td>1 · ติดตั้งปลั๊กอิน</td><td>เปิดไฟล์ Figma → เมนู <code>Plugins</code> → หา <code>Tokens Studio for Figma</code></td></tr>
+      <tr><td>2 · นำเข้าไฟล์</td><td>ในปลั๊กอิน กด <code>Tools</code> → <code>Load from file/folder</code> แล้วเลือก <code>pooddai-tokens.json</code></td></tr>
+      <tr><td>3 · ติดตั้งฟอนต์ก่อน</td><td>ต้องมี IBM Plex Sans Thai ในเครื่อง ไม่งั้น Text Style จะตกไปใช้ฟอนต์อื่นเงียบๆ</td></tr>
+      <tr><td>4 · สร้างสไตล์</td><td>กด <code>Export</code> → เลือก <code>Styles</code> จะได้ Color Style กับ Text Style ครบทุกตัว</td></tr>
+      <tr><td>5 · สลับโหมด</td><td>แท็บ <code>Themes</code> มี Light กับ Dark ให้สลับ ทุกโทเคนเปลี่ยนตามทั้งไฟล์</td></tr>
+    </table>
+  </div>
+
+  <div class="sub"><h3>Design tokens (JSON)</h3><span>รูปแบบ Tokens Studio · docs/pooddai-tokens.json</span></div>
+  <div class="codeblock">
+    <button class="copy" data-copy="tokensJson">คัดลอก</button>
+    <pre id="tokensJson"></pre>
+  </div>
+
+  <div class="sub"><h3>CSS custom properties</h3><span>สำหรับงานเว็บ</span></div>
+  <div class="codeblock">
+    <button class="copy" data-copy="tokensCss">คัดลอก</button>
+    <pre id="tokensCss"></pre>
+  </div>
+</section>
+
+</div>
+
+<footer><div class="wrap">พูดได้ (PoodDai) · ค่าทั้งหมดอ่านจากธีมตอนรันจริง ไม่ได้คัดลอกจากเอกสาร</div></footer>
+
+<div class="toast" id="toast">คัดลอกแล้ว</div>
+
+<script>
+// ── ข้อมูลสเปก ────────────────────────────────────────────────────────
+const SCHEME = [
+  ['primary','#FB6D3A','#FB6D3A'],['onPrimary','#FFFFFF','#FFFFFF'],
+  ['primaryContainer','#FFD5C4','#43281D'],['onPrimaryContainer','#6B2A10','#FFD5C4'],
+  ['secondary','#FFC93E','#FFC93E'],['onSecondary','#1B1A19','#1B1A19'],
+  ['secondaryContainer','#FFE9A8','#43391A'],['onSecondaryContainer','#5C4A0E','#FFE9A8'],
+  ['tertiary','#6C9BF6','#6C9BF6'],['onTertiary','#FFFFFF','#FFFFFF'],
+  ['tertiaryContainer','#D7E4FD','#20304A'],['onTertiaryContainer','#17335F','#D7E4FD'],
+  ['error','#E5484D','#E5484D'],['onError','#FFFFFF','#FFFFFF'],
+  ['errorContainer','#FFDAD9','#4A1F21'],['onErrorContainer','#6E1416','#FFDAD9'],
+  ['surface','#FFFFFF','#232027'],['onSurface','#1B1A19','#F3EFEA'],
+  ['onSurfaceVariant','#6F6A65','#9C958D'],
+  ['surfaceContainerLowest','#FFFFFF','#121016'],['surfaceContainerLow','#FBF9F7','#1D1A21'],
+  ['surfaceContainer','#F7F4F1','#232027'],['surfaceContainerHigh','#F1EDE8','#2A262F'],
+  ['surfaceContainerHighest','#EDE8E2','#322D38'],
+  ['outline','#6F6A65','#9C958D'],['outlineVariant','#DFD8D0','#3B3640'],
+  ['inverseSurface','#1B1A19','#F3EFEA'],['onInverseSurface','#FFFFFF','#1B1A19'],
+];
+
+// role, px, weight, letterSpacing, height, สีตัวอักษร, ใช้กับ, ตัวอย่าง
+const TYPE = [
+  ['displayLarge',57,400,-0.25,1.12,'#1B1A19','ไม่ได้ปรับ — ค่า Material เดิม','พูดได้'],
+  ['displayMedium',45,400,0,1.16,'#1B1A19','ไม่ได้ปรับ — ค่า Material เดิม','พูดได้'],
+  ['displaySmall',36,800,-1,1.15,'#1B1A19','ตัวเลขคะแนนใหญ่ หัวหน้าจอ','คะแนน 89'],
+  ['headlineLarge',32,800,-0.8,1.2,'#1B1A19','หัวข้อใหญ่ในหน้า','ฝึกพูดวันละสิบประโยค'],
+  ['headlineMedium',28,800,-0.5,1.29,'#1B1A19','หัวข้อรองในหน้า','จุดที่พูดไม่ออก'],
+  ['headlineSmall',24,700,-0.3,1.33,'#1B1A19','หัวการ์ดใหญ่','บทที่ 1 · ทักทาย'],
+  ['titleLarge',22,800,-0.3,1.27,'#1B1A19','ชื่อหน้าบน AppBar','ผลการฝึก'],
+  ['titleMedium',16,700,0.15,1.5,'#1B1A19','หัวแถวใน ListTile','ความถูกต้อง'],
+  ['titleSmall',14,700,0.1,1.43,'#1B1A19','หัวข้อย่อยในการ์ด','คำที่ต้องแก้'],
+  ['bodyLarge',16,400,0.5,1.45,'#1B1A19','เนื้อความหลัก','ช่วยพูดช้าลงอีกนิดได้ไหม'],
+  ['bodyMedium',14,400,0.25,1.45,'#1B1A19','เนื้อความทั่วไป คำอธิบายในการ์ด','เทียบทีละคำแล้วบอกว่าเพี้ยนตรงไหน'],
+  ['bodySmall',12,400,0.4,1.4,'#6F6A65','คำอ่านคาราโอเกะ หมายเหตุ','คูด ยู สปีค อะ ลิท-เทิ่ล'],
+  ['labelLarge',14,700,0.1,1.43,'#1B1A19','ตัวหนังสือบนปุ่มทุกชนิด','เริ่มฝึก'],
+  ['labelMedium',12,700,0.5,1.33,'#6F6A65','ป้ายกำกับ ชิป','ออฟไลน์'],
+  ['labelSmall',11,600,0.2,1.45,'#6F6A65','ป้ายเล็กสุด แถบนำทางล่าง','พัฒนาการ'],
+];
+
+// ── สร้างตาราง ColorScheme ────────────────────────────────────────────
+document.getElementById('schemeBody').innerHTML = SCHEME.map(([k, l, d]) => `
+  <tr>
+    <td class="k">${k}</td>
+    <td class="v"><span class="dot" style="background:${l}"></span>${l}</td>
+    <td class="v"><span class="dot" style="background:${d}"></span>${d}</td>
+  </tr>`).join('');
+
+// ── สร้างตัวอย่างตัวอักษร ─────────────────────────────────────────────
+const WEIGHT_NAME = {400:'Regular',500:'Medium',600:'SemiBold',700:'Bold',800:'Bold (800→700)'};
+document.getElementById('typeRows').innerHTML = TYPE.map(([role, px, w, ls, h, color, use, sample]) => `
+  <div class="type-row">
+    <div class="type-meta">
+      <span class="role">${role}</span>
+      <span class="dim">${px} px · ${WEIGHT_NAME[w]}</span>
+      <span class="dim">LH ${Math.round(px * h)} px (${Math.round(h * 100)}%)</span>
+      <span class="dim">LS ${ls} px</span>
+      <span class="tagx">${use}</span>
+    </div>
+    <div class="sample">
+      <span style="font-size:${px}px;font-weight:${Math.min(w, 700)};letter-spacing:${ls}px;line-height:${h};color:${color}">${sample}</span>
+    </div>
+  </div>`).join('');
+
+// ── ส่งออก ────────────────────────────────────────────────────────────
+// โทเคนรูปแบบ Tokens Studio — ก้อนเดียวกับ docs/pooddai-tokens.json
+const TOKENS_STUDIO = {
+  "core": {
+    "font": {
+      "family": {
+        "value": "IBM Plex Sans Thai",
+        "type": "fontFamilies"
+      }
+    },
+    "brand": {
+      "orange": {
+        "value": "#FB6D3A",
+        "type": "color"
+      },
+      "amber": {
+        "value": "#FFC93E",
+        "type": "color"
+      },
+      "blue": {
+        "value": "#6C9BF6",
+        "type": "color"
+      },
+      "mint": {
+        "value": "#9FE3B0",
+        "type": "color"
+      },
+      "peach": {
+        "value": "#FFD5C4",
+        "type": "color"
+      },
+      "lilac": {
+        "value": "#C8BDF7",
+        "type": "color"
+      },
+      "rose": {
+        "value": "#FFB3B3",
+        "type": "color"
+      }
+    },
+    "status": {
+      "good": {
+        "value": "#3FAE6A",
+        "type": "color"
+      },
+      "fair": {
+        "value": "#EE9A26",
+        "type": "color"
+      },
+      "poor": {
+        "value": "#E5484D",
+        "type": "color"
+      }
+    },
+    "language": {
+      "english": {
+        "value": "#6C9BF6",
+        "type": "color"
+      },
+      "hebrew": {
+        "value": "#C8BDF7",
+        "type": "color"
+      },
+      "mandarinTw": {
+        "value": "#FB6D3A",
+        "type": "color"
+      },
+      "mandarinCn": {
+        "value": "#FFB3B3",
+        "type": "color"
+      }
+    },
+    "radius": {
+      "card": {
+        "value": "26",
+        "type": "borderRadius"
+      },
+      "inner": {
+        "value": "18",
+        "type": "borderRadius"
+      },
+      "pill": {
+        "value": "999",
+        "type": "borderRadius"
+      }
+    },
+    "text": {
+      "displayLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "57",
+          "lineHeight": "112%",
+          "letterSpacing": "-0.25px"
+        },
+        "type": "typography"
+      },
+      "displayMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "45",
+          "lineHeight": "116%",
+          "letterSpacing": "0.0px"
+        },
+        "type": "typography"
+      },
+      "displaySmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "36",
+          "lineHeight": "115%",
+          "letterSpacing": "-1.0px"
+        },
+        "type": "typography"
+      },
+      "headlineLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "32",
+          "lineHeight": "120%",
+          "letterSpacing": "-0.8px"
+        },
+        "type": "typography"
+      },
+      "headlineMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "28",
+          "lineHeight": "129%",
+          "letterSpacing": "-0.5px"
+        },
+        "type": "typography"
+      },
+      "headlineSmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "24",
+          "lineHeight": "133%",
+          "letterSpacing": "-0.3px"
+        },
+        "type": "typography"
+      },
+      "titleLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "22",
+          "lineHeight": "127%",
+          "letterSpacing": "-0.3px"
+        },
+        "type": "typography"
+      },
+      "titleMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "16",
+          "lineHeight": "150%",
+          "letterSpacing": "0.15px"
+        },
+        "type": "typography"
+      },
+      "titleSmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "14",
+          "lineHeight": "143%",
+          "letterSpacing": "0.1px"
+        },
+        "type": "typography"
+      },
+      "bodyLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "16",
+          "lineHeight": "145%",
+          "letterSpacing": "0.5px"
+        },
+        "type": "typography"
+      },
+      "bodyMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "14",
+          "lineHeight": "145%",
+          "letterSpacing": "0.25px"
+        },
+        "type": "typography"
+      },
+      "bodySmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Regular",
+          "fontSize": "12",
+          "lineHeight": "140%",
+          "letterSpacing": "0.4px"
+        },
+        "type": "typography"
+      },
+      "labelLarge": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "14",
+          "lineHeight": "143%",
+          "letterSpacing": "0.1px"
+        },
+        "type": "typography"
+      },
+      "labelMedium": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "Bold",
+          "fontSize": "12",
+          "lineHeight": "133%",
+          "letterSpacing": "0.5px"
+        },
+        "type": "typography"
+      },
+      "labelSmall": {
+        "value": {
+          "fontFamily": "{font.family}",
+          "fontWeight": "SemiBold",
+          "fontSize": "11",
+          "lineHeight": "145%",
+          "letterSpacing": "0.2px"
+        },
+        "type": "typography"
+      }
+    }
+  },
+  "light": {
+    "surface": {
+      "ground": {
+        "value": "#F4F1ED",
+        "type": "color"
+      },
+      "card": {
+        "value": "#FFFFFF",
+        "type": "color"
+      },
+      "line": {
+        "value": "#DFD8D0",
+        "type": "color"
+      }
+    },
+    "content": {
+      "primary": {
+        "value": "#1B1A19",
+        "type": "color"
+      },
+      "secondary": {
+        "value": "#6F6A65",
+        "type": "color"
+      },
+      "onTint": {
+        "value": "#1B1A19",
+        "type": "color"
+      }
+    },
+    "tint": {
+      "1": {
+        "value": "#FFE08A",
+        "type": "color"
+      },
+      "2": {
+        "value": "#BBD3FB",
+        "type": "color"
+      },
+      "3": {
+        "value": "#FFCBB8",
+        "type": "color"
+      },
+      "4": {
+        "value": "#C3EFCE",
+        "type": "color"
+      },
+      "5": {
+        "value": "#DCD3FB",
+        "type": "color"
+      },
+      "6": {
+        "value": "#FFD1D1",
+        "type": "color"
+      }
+    },
+    "tintIcon": {
+      "1": {
+        "value": "#AF891D",
+        "type": "color"
+      },
+      "2": {
+        "value": "#1D54AF",
+        "type": "color"
+      },
+      "3": {
+        "value": "#AF441D",
+        "type": "color"
+      },
+      "4": {
+        "value": "#1DAF41",
+        "type": "color"
+      },
+      "5": {
+        "value": "#3E1DAF",
+        "type": "color"
+      },
+      "6": {
+        "value": "#AF1D1D",
+        "type": "color"
+      }
+    }
+  },
+  "dark": {
+    "surface": {
+      "ground": {
+        "value": "#17151A",
+        "type": "color"
+      },
+      "card": {
+        "value": "#232027",
+        "type": "color"
+      },
+      "line": {
+        "value": "#3B3640",
+        "type": "color"
+      }
+    },
+    "content": {
+      "primary": {
+        "value": "#F3EFEA",
+        "type": "color"
+      },
+      "secondary": {
+        "value": "#9C958D",
+        "type": "color"
+      },
+      "onTint": {
+        "value": "#1B1A19",
+        "type": "color"
+      }
+    },
+    "tint": {
+      "1": {
+        "value": "#C3AB6D",
+        "type": "color"
+      },
+      "2": {
+        "value": "#90A2C1",
+        "type": "color"
+      },
+      "3": {
+        "value": "#C39C8F",
+        "type": "color"
+      },
+      "4": {
+        "value": "#96B69F",
+        "type": "color"
+      },
+      "5": {
+        "value": "#A9A2C1",
+        "type": "color"
+      },
+      "6": {
+        "value": "#C3A0A1",
+        "type": "color"
+      }
+    },
+    "tintIcon": {
+      "1": {
+        "value": "#AF891D",
+        "type": "color"
+      },
+      "2": {
+        "value": "#1D54AF",
+        "type": "color"
+      },
+      "3": {
+        "value": "#AF441D",
+        "type": "color"
+      },
+      "4": {
+        "value": "#1DAF41",
+        "type": "color"
+      },
+      "5": {
+        "value": "#3E1DAF",
+        "type": "color"
+      },
+      "6": {
+        "value": "#AF1D1D",
+        "type": "color"
+      }
+    }
+  },
+  "$themes": [
+    {
+      "id": "light",
+      "name": "Light",
+      "selectedTokenSets": {
+        "core": "source",
+        "light": "enabled"
+      },
+      "$figmaStyleReferences": {}
+    },
+    {
+      "id": "dark",
+      "name": "Dark",
+      "selectedTokenSets": {
+        "core": "source",
+        "dark": "enabled"
+      },
+      "$figmaStyleReferences": {}
+    }
+  ],
+  "$metadata": {
+    "tokenSetOrder": [
+      "core",
+      "light",
+      "dark"
+    ]
+  }
+};
+document.getElementById('tokensJson').textContent = JSON.stringify(TOKENS_STUDIO, null, 2);
+
+document.getElementById('tokensCss').textContent =
+`:root{
+  --pood-ground:#F4F1ED;
+  --pood-surface:#FFFFFF;
+  --pood-ink:#1B1A19;
+  --pood-ink-soft:#6F6A65;
+  --pood-line:#DFD8D0;
+  --pood-orange:#FB6D3A;
+  --pood-amber:#FFC93E;
+  --pood-blue:#6C9BF6;
+  --pood-mint:#9FE3B0;
+  --pood-peach:#FFD5C4;
+  --pood-lilac:#C8BDF7;
+  --pood-rose:#FFB3B3;
+  --pood-good:#3FAE6A;
+  --pood-fair:#EE9A26;
+  --pood-poor:#E5484D;
+  --pood-tint-1:#FFE08A; --pood-tint-2:#BBD3FB; --pood-tint-3:#FFCBB8;
+  --pood-tint-4:#C3EFCE; --pood-tint-5:#DCD3FB; --pood-tint-6:#FFD1D1;
+  --pood-radius-card:26px;
+  --pood-radius-inner:18px;
+  --pood-radius-pill:999px;
+  --pood-font:'IBM Plex Sans Thai','Noto Sans Thai',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --pood-ground:#17151A;
+    --pood-surface:#232027;
+    --pood-ink:#F3EFEA;
+    --pood-ink-soft:#9C958D;
+    --pood-line:#3B3640;
+    --pood-tint-1:#C3AB6D; --pood-tint-2:#90A2C1; --pood-tint-3:#C39C8F;
+    --pood-tint-4:#96B69F; --pood-tint-5:#A9A2C1; --pood-tint-6:#C3A0A1;
+  }
+}`;
+
+// ── คัดลอก ────────────────────────────────────────────────────────────
+const toast = document.getElementById('toast');
+let toastTimer;
+function flash(msg){
+  toast.textContent = msg;
+  toast.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('on'), 1500);
+}
+async function put(text){
+  try{
+    await navigator.clipboard.writeText(text);
+  }catch{
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch{ flash('คัดลอกไม่ได้ ให้เลือกข้อความเอง'); return false; }
+    finally{ ta.remove(); }
+  }
+  return true;
+}
+document.addEventListener('click', async (e) => {
+  const swatch = e.target.closest('[data-hex]');
+  if (swatch){
+    if (await put(swatch.dataset.hex)) flash(`คัดลอก ${swatch.dataset.hex} แล้ว`);
+    return;
+  }
+  const btn = e.target.closest('.copy');
+  if (btn){
+    const src = document.getElementById(btn.dataset.copy).textContent;
+    if (await put(src)){
+      btn.textContent = 'คัดลอกแล้ว';
+      btn.classList.add('done');
+      setTimeout(() => { btn.textContent = 'คัดลอก'; btn.classList.remove('done'); }, 1600);
+    }
+  }
+});
+</script>
+</body>
+</html>

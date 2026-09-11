@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>โมเดล AI ใน PoodDai</title>
+<style>
+  :root {
+    --bg: #F0F2EF;
+    --panel: #E4E8E4;
+    --panel-2: #DADFDA;
+    --ink: #171C1A;
+    --ink-2: #56605A;
+    --ink-3: #7C867F;
+    --line: #C7CFC8;
+    --line-soft: #D6DCD6;
+    --os: #0E7C6B;
+    --os-soft: #CFE3DE;
+    --dl: #A9491F;
+    --dl-soft: #EEDBD0;
+    --dsp: #3B5680;
+    --dsp-soft: #D5DEEA;
+    --accent: #0E7C6B;
+
+    --f-text: -apple-system, "SF Pro Text", "Sukhumvit Set", "IBM Plex Sans Thai",
+              "Noto Sans Thai", "Leelawadee UI", system-ui, sans-serif;
+    --f-mono: "SF Mono", ui-monospace, "IBM Plex Mono", Menlo, Consolas, monospace;
+
+    --sp: clamp(1rem, 3vw, 1.6rem);
+    --maxw: 60rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111513;
+      --panel: #1A201D;
+      --panel-2: #212925;
+      --ink: #E5EAE6;
+      --ink-2: #97A29B;
+      --ink-3: #77827B;
+      --line: #2C3632;
+      --line-soft: #232B28;
+      --os: #4CC3AB;
+      --os-soft: #16332E;
+      --dl: #E08A62;
+      --dl-soft: #33231B;
+      --dsp: #86A4DC;
+      --dsp-soft: #1B2434;
+      --accent: #4CC3AB;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #111513;
+    --panel: #1A201D;
+    --panel-2: #212925;
+    --ink: #E5EAE6;
+    --ink-2: #97A29B;
+    --ink-3: #77827B;
+    --line: #2C3632;
+    --line-soft: #232B28;
+    --os: #4CC3AB;
+    --os-soft: #16332E;
+    --dl: #E08A62;
+    --dl-soft: #33231B;
+    --dsp: #86A4DC;
+    --dsp-soft: #1B2434;
+    --accent: #4CC3AB;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--f-text);
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: clamp(2rem, 6vw, 4.5rem) var(--sp) 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  /* ---------- type ---------- */
+  h1, h2, h3 { margin: 0; text-wrap: balance; line-height: 1.3; font-weight: 700; }
+  h1 { font-size: clamp(1.9rem, 5.5vw, 2.9rem); letter-spacing: -0.015em; }
+  h2 { font-size: clamp(1.25rem, 3vw, 1.5rem); letter-spacing: -0.01em; }
+  h3 { font-size: 1.06rem; }
+  p { margin: 0; }
+
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .lede { font-size: clamp(1.02rem, 2.3vw, 1.14rem); color: var(--ink-2); max-width: 42em; }
+  .note { font-size: 0.9rem; color: var(--ink-2); }
+  .mono { font-family: var(--f-mono); font-size: 0.86em; }
+
+  code {
+    font-family: var(--f-mono);
+    font-size: 0.85em;
+    background: var(--panel-2);
+    border: 1px solid var(--line-soft);
+    border-radius: 3px;
+    padding: 0.08em 0.34em;
+    word-break: break-word;
+  }
+
+  /* ---------- header ---------- */
+  header { display: flex; flex-direction: column; gap: 1rem; }
+
+  .rule {
+    height: 1px;
+    background: var(--line);
+    border: 0;
+    margin: 0;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 0.6rem;
+  }
+  .stat { background: var(--bg); padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.15rem; }
+  .stat b {
+    font-family: var(--f-mono);
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .stat span { font-size: 0.82rem; color: var(--ink-2); line-height: 1.45; }
+
+  /* ---------- sections ---------- */
+  section { display: flex; flex-direction: column; gap: 1.1rem; }
+  .sec-head { display: flex; flex-direction: column; gap: 0.35rem; }
+
+  /* ---------- chart ---------- */
+  .chart { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--line); }
+  .row {
+    display: grid;
+    grid-template-columns: minmax(8rem, 13rem) 1fr auto;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.62rem 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .row-name { font-size: 0.9rem; }
+  .track { position: relative; height: 9px; background: var(--panel); }
+  .bar {
+    position: absolute; inset: 0 auto 0 0;
+    width: var(--w);
+    background: var(--dl);
+    animation: grow 0.7s cubic-bezier(0.22, 0.8, 0.3, 1) both;
+  }
+  .bar.zero {
+    width: 3px;
+    background: var(--os);
+    animation: none;
+  }
+  .row-val {
+    font-family: var(--f-mono);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+  .row-val.free { color: var(--os); }
+  @keyframes grow { from { width: 0; } to { width: var(--w); } }
+  @media (prefers-reduced-motion: reduce) { .bar { animation: none; } }
+  @media (max-width: 34rem) {
+    .row { grid-template-columns: 1fr auto; }
+    .track { grid-column: 1 / -1; }
+  }
+
+  /* ---------- model panels ---------- */
+  .models { display: flex; flex-direction: column; gap: 1rem; }
+
+  .model {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: clamp(1rem, 3vw, 1.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .model-head { display: flex; flex-direction: column; gap: 0.5rem; }
+  .model-title {
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    gap: 0.5rem 0.75rem;
+  }
+  .model-id {
+    font-family: var(--f-mono);
+    font-size: 0.78rem;
+    color: var(--ink-3);
+    word-break: break-all;
+  }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: var(--f-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.22rem 0.5rem;
+    border-radius: 2px;
+    white-space: nowrap;
+    align-self: flex-start;
+  }
+  .chip.os  { color: var(--os);  background: var(--os-soft);  }
+  .chip.dl  { color: var(--dl);  background: var(--dl-soft);  }
+  .chip.dsp { color: var(--dsp); background: var(--dsp-soft); }
+
+  .specs {
+    display: grid;
+    grid-template-columns: minmax(7rem, 10rem) 1fr;
+    gap: 1px;
+    background: var(--line-soft);
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .specs dt {
+    background: var(--panel);
+    padding: 0.55rem 0.7rem 0.55rem 0;
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    line-height: 2;
+  }
+  .specs dd {
+    background: var(--panel);
+    margin: 0;
+    padding: 0.55rem 0 0.55rem 0.7rem;
+    font-size: 0.92rem;
+  }
+  @media (max-width: 34rem) {
+    .specs { grid-template-columns: 1fr; }
+    .specs dt { padding-bottom: 0; line-height: 1.6; }
+    .specs dd { padding-left: 0; padding-top: 0.15rem; }
+  }
+
+  .why {
+    font-size: 0.9rem;
+    color: var(--ink-2);
+    border-left: 2px solid var(--line);
+    padding-left: 0.85rem;
+  }
+  .why b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- diagrams ---------- */
+  figure { margin: 0; display: flex; flex-direction: column; gap: 0.8rem; }
+  .fig-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .diagram {
+    display: block;
+    height: auto;
+    font-family: var(--f-text);
+  }
+  .diagram.d1 { width: 1110px; max-width: 1110px; min-width: 780px; }
+  .diagram.d2 { width: 940px; max-width: 940px; min-width: 620px; }
+  figcaption { font-size: 0.88rem; color: var(--ink-2); max-width: 46em; }
+
+  .n { fill: var(--bg); stroke-width: 1.4; }
+  .n-os { stroke: var(--os); }
+  .n-dl { stroke: var(--dl); }
+  .n-dsp { stroke: var(--dsp); }
+  .n-plain { stroke: var(--line); }
+  .n-out { fill: var(--panel); stroke: var(--line); }
+  .n-check { fill: var(--bg); stroke: var(--line); stroke-dasharray: 4 3; }
+  .t { fill: var(--ink); font-size: 13px; }
+  .t-sub { fill: var(--ink-2); font-size: 10.5px; }
+  .t-arrow { fill: var(--ink-3); font-size: 10px; }
+  .wire { stroke: var(--ink-3); stroke-width: 1.2; fill: none; }
+  .stop { stroke: var(--ink-3); stroke-width: 1.4; fill: none; }
+  .dash { stroke-dasharray: 4 3; }
+  .head { fill: var(--ink-3); }
+
+  /* ---------- tables ---------- */
+  .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    min-width: 30rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.55rem 0.9rem 0.55rem 0;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  thead th {
+    font-family: var(--f-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 500;
+    border-bottom: 1px solid var(--line);
+  }
+  td.num {
+    font-family: var(--f-mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  td.dim { color: var(--ink-2); }
+
+  /* ---------- fallback list ---------- */
+  ol.chain {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column;
+    counter-reset: step;
+  }
+  ol.chain li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 2.1rem 1fr;
+    gap: 0.9rem;
+    padding: 0.72rem 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 0.93rem;
+  }
+  ol.chain li::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: var(--f-mono);
+    font-size: 0.76rem;
+    color: var(--ink-3);
+    padding-top: 0.22rem;
+  }
+  ol.chain b { font-weight: 600; }
+  ol.chain .arrow { color: var(--ink-3); font-family: var(--f-mono); }
+
+  footer {
+    font-size: 0.84rem;
+    color: var(--ink-3);
+    border-top: 1px solid var(--line);
+    padding-top: 1.2rem;
+  }
+
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">PoodDai · สถาปัตยกรรมโมเดล</p>
+    <h1>โมเดล AI ที่ใช้ในแอป</h1>
+    <p class="lede">
+      PoodDai ใช้โมเดล 5 กลุ่ม บวกชุดวิเคราะห์สัญญาณเสียงอีกชั้นที่จงใจไม่ใช้ AI
+      ทุกตัวประมวลผลบนเครื่อง ไม่มีเสียง รูป หรือประวัติการฝึกออกจากเครื่องผู้ใช้
+    </p>
+
+    <div class="stats">
+      <div class="stat"><b>5</b><span>กลุ่มโมเดลที่ใช้งานจริง</span></div>
+      <div class="stat"><b>4</b><span>ตัวติดมากับ iOS ไม่กินพื้นที่</span></div>
+      <div class="stat"><b>613<small class="mono"> MB</small></b><span>ที่ต้องโหลดเพิ่ม (ค่าเริ่มต้น)</span></div>
+      <div class="stat"><b>0</b><span>ไบต์ที่ส่งขึ้นคลาวด์</span></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <h2>โมเดลอยู่ที่ไหน</h2>
+      <p class="note">
+        แกนที่สำคัญที่สุดของสแตกนี้คือ “น้ำหนักโมเดลเก็บไว้ตรงไหน” เพราะมันกำหนดทั้งขนาดแอป
+        เงื่อนไขเครื่องที่รองรับ และสิ่งที่ต้องทำเมื่อโมเดลไม่พร้อม
+        ความสามารถส่วนใหญ่มาจากโมเดลที่ Apple ใส่มาให้ในระบบปฏิบัติการอยู่แล้ว จึงมีต้นทุนดาวน์โหลดเป็นศูนย์
+      </p>
+    </div>
+
+    <div class="chart">
+      <div class="row">
+        <span class="row-name">Apple Foundation Models</span>
+        <span class="track"><span class="bar zero"></span></span>
+        <span class="row-val free">อยู่ในระบบ</span>
+      </div>
+      <div class="row">
+        <span class="row-name">SFSpeechRecognizer</span>
+        <span class="track"><span class="bar zero"></span></span>
+        <span class="row-val free">อยู่ในระบบ</span>
+      </div>
+      <div class="row">
+        <span class="row-name">Vision (OCR)</span>
+        <span class="track"><span class="bar zero"></span></span>
+        <span class="row-val free">อยู่ในระบบ</span>
+      </div>
+      <div class="row">
+        <span class="row-name">AVSpeechSynthesizer</span>
+        <span class="track"><span class="bar zero"></span></span>
+        <span class="row-val free">อยู่ในระบบ</span>
+      </div>
+      <div class="row">
+        <span class="row-name">Kokoro int8 v1.0</span>
+        <span class="track"><span class="bar" style="--w: 27%"></span></span>
+        <span class="row-val">~125 MB</span>
+      </div>
+      <div class="row">
+        <span class="row-name">Whisper small (ggml)</span>
+        <span class="track"><span class="bar" style="--w: 100%"></span></span>
+        <span class="row-val">488 MB</span>
+      </div>
+    </div>
+    <p class="note">Whisper เลือกรุ่นได้ — <span class="mono">base</span> 148 MB · <span class="mono">small</span> 488 MB (ค่าเริ่มต้น) · <span class="mono">medium</span> 1,530 MB</p>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>เส้นทางของการพูดหนึ่งครั้ง</h2>
+      <p class="note">
+        ผู้ใช้กดอัดหนึ่งครั้ง แต่เสียงก้อนเดียวกันถูกส่งเข้าสามเส้นทางพร้อมกัน
+        และมีเพียงสองเส้นทางเท่านั้นที่มีผลกับคะแนน
+      </p>
+    </div>
+
+    <figure>
+      <div class="fig-scroll">
+        <svg class="diagram d1" viewBox="0 0 1110 645" role="img"
+             aria-label="แผนภาพการไหล: เสียงที่ผู้ใช้พูดหนึ่งครั้งถูกแยกเข้าสามเส้นทางพร้อมกัน — SFSpeechRecognizer สำหรับไฮไลต์คำซึ่งจบในตัวเอง, Whisper สำหรับถอดข้อความเข้าสู่การเทียบคำ, และตัวจับระดับเสียง YIN เข้าสู่การเทียบทำนองกับเส้นเสียงต้นแบบจากระบบสังเคราะห์เสียง ผลทั้งสองทางรวมเป็นคะแนน แล้วส่งต่อให้ Apple Foundation Models สรุปเป็นคำโค้ชภาษาไทยและแบบฝึกใหม่">
+          <defs>
+            <marker id="ar1" viewBox="0 0 8 8" refX="7" refY="4"
+                    markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L8,4 L0,8 z" class="head"/>
+            </marker>
+          </defs>
+
+          <!-- wires -->
+          <path class="wire" d="M431,66 V100"/>
+          <path class="wire" d="M161,100 H701"/>
+          <path class="wire" d="M161,100 V132" marker-end="url(#ar1)"/>
+          <path class="wire" d="M431,100 V132" marker-end="url(#ar1)"/>
+          <path class="wire" d="M701,100 V132" marker-end="url(#ar1)"/>
+          <path class="wire" d="M971,66 V132" marker-end="url(#ar1)"/>
+
+          <path class="wire" d="M161,186 V246" marker-end="url(#ar1)"/>
+          <path class="wire" d="M431,186 V246" marker-end="url(#ar1)"/>
+          <path class="wire" d="M701,186 V246" marker-end="url(#ar1)"/>
+          <path class="wire" d="M971,186 V246" marker-end="url(#ar1)"/>
+
+          <path class="wire" d="M431,300 V360" marker-end="url(#ar1)"/>
+          <path class="wire" d="M701,300 V360" marker-end="url(#ar1)"/>
+          <path class="wire" d="M971,300 V387 H818" marker-end="url(#ar1)"/>
+
+          <path class="wire" d="M431,414 V435 H566"/>
+          <path class="wire" d="M701,414 V435 H566"/>
+          <path class="wire" d="M566,435 V456" marker-end="url(#ar1)"/>
+          <path class="wire" d="M566,510 V552" marker-end="url(#ar1)"/>
+          <path class="wire" d="M406,581 H20 V39 H311" marker-end="url(#ar1)"/>
+
+          <!-- dead end on the live path -->
+          <path class="wire dash" d="M161,300 V314"/>
+          <path class="stop" d="M147,314 H175"/>
+
+          <!-- row 0 -->
+          <rect class="n n-plain" x="311" y="12" width="240" height="54" rx="3"/>
+          <text class="t" x="431" y="34" text-anchor="middle">ผู้ใช้พูด 1 ครั้ง</text>
+          <text class="t-sub" x="431" y="51" text-anchor="middle">อัดเป็น WAV 16 kHz mono</text>
+
+          <rect class="n n-plain" x="856" y="12" width="230" height="54" rx="3"/>
+          <text class="t" x="971" y="34" text-anchor="middle">ประโยคเป้าหมาย</text>
+          <text class="t-sub" x="971" y="51" text-anchor="middle">ข้อความจากบทเรียน</text>
+
+          <!-- row 1 : models -->
+          <rect class="n n-os" x="46" y="132" width="230" height="54" rx="3"/>
+          <text class="t" x="161" y="154" text-anchor="middle">SFSpeechRecognizer</text>
+          <text class="t-sub" x="161" y="171" text-anchor="middle">ในระบบ iOS · บังคับทำบนเครื่อง</text>
+
+          <rect class="n n-dl" x="316" y="132" width="230" height="54" rx="3"/>
+          <text class="t" x="431" y="154" text-anchor="middle">Whisper small</text>
+          <text class="t-sub" x="431" y="171" text-anchor="middle">ดาวน์โหลด 488 MB</text>
+
+          <rect class="n n-dsp" x="586" y="132" width="230" height="54" rx="3"/>
+          <text class="t" x="701" y="154" text-anchor="middle">ตัวจับระดับเสียง YIN</text>
+          <text class="t-sub" x="701" y="171" text-anchor="middle">คำนวณล้วน ไม่มีโมเดล</text>
+
+          <rect class="n n-dl" x="856" y="132" width="230" height="54" rx="3"/>
+          <text class="t" x="971" y="154" text-anchor="middle">Kokoro หรือเสียงระบบ</text>
+          <text class="t-sub" x="971" y="171" text-anchor="middle">สังเคราะห์เสียงต้นแบบ</text>
+
+          <!-- row 2 : intermediates -->
+          <rect class="n n-out" x="46" y="246" width="230" height="54" rx="3"/>
+          <text class="t" x="161" y="268" text-anchor="middle">ไฮไลต์คำระหว่างพูด</text>
+          <text class="t-sub" x="161" y="285" text-anchor="middle">แสดงผลอย่างเดียว</text>
+
+          <rect class="n n-out" x="316" y="246" width="230" height="54" rx="3"/>
+          <text class="t" x="431" y="268" text-anchor="middle">ข้อความที่ถอดได้</text>
+          <text class="t-sub" x="431" y="285" text-anchor="middle">ผลสุดท้าย ไม่เปลี่ยนอีก</text>
+
+          <rect class="n n-out" x="586" y="246" width="230" height="54" rx="3"/>
+          <text class="t" x="701" y="268" text-anchor="middle">เส้นเสียงผู้ใช้</text>
+          <text class="t-sub" x="701" y="285" text-anchor="middle">ย่อเหลือ 48 จุด</text>
+
+          <rect class="n n-out" x="856" y="246" width="230" height="54" rx="3"/>
+          <text class="t" x="971" y="268" text-anchor="middle">เส้นเสียงต้นแบบ</text>
+          <text class="t-sub" x="971" y="285" text-anchor="middle">ย่อเหลือ 48 จุดเท่ากัน</text>
+
+          <!-- row 3 : analysis -->
+          <rect class="n n-dsp" x="316" y="360" width="230" height="54" rx="3"/>
+          <text class="t" x="431" y="382" text-anchor="middle">ScoringEngine</text>
+          <text class="t-sub" x="431" y="399" text-anchor="middle">เทียบคำแบบ Levenshtein</text>
+
+          <rect class="n n-dsp" x="586" y="360" width="230" height="54" rx="3"/>
+          <text class="t" x="701" y="382" text-anchor="middle">MelodyMatch + ToneAnalyzer</text>
+          <text class="t-sub" x="701" y="399" text-anchor="middle">เทียบทำนองและวรรณยุกต์</text>
+
+          <!-- row 4 : score -->
+          <rect class="n n-out" x="426" y="456" width="280" height="54" rx="3"/>
+          <text class="t" x="566" y="478" text-anchor="middle">คะแนนการออกเสียง</text>
+          <text class="t-sub" x="566" y="495" text-anchor="middle">พร้อมรายการคำที่ออกเสียงพลาด</text>
+
+          <!-- row 5 : llm -->
+          <rect class="n n-os" x="406" y="552" width="320" height="58" rx="3"/>
+          <text class="t" x="566" y="575" text-anchor="middle">Apple Foundation Models</text>
+          <text class="t-sub" x="566" y="593" text-anchor="middle">สรุปเป็นคำโค้ชภาษาไทย + สร้างแบบฝึกใหม่</text>
+
+          <!-- arrow labels -->
+          <text class="t-arrow" x="296" y="92" text-anchor="middle">เสียงก้อนเดียวกัน แตกเป็น 3 ทาง</text>
+          <text class="t-arrow" x="168" y="220">ข้อความชั่วคราว</text>
+          <text class="t-arrow" x="438" y="220">ข้อความสุดท้าย</text>
+          <text class="t-arrow" x="708" y="220">ความถี่ต่อเฟรม</text>
+          <text class="t-arrow" x="978" y="220">เส้นเสียงอ้างอิง</text>
+          <text class="t-arrow" x="893" y="378" text-anchor="middle">เทียบกับ</text>
+          <text class="t-arrow" x="574" y="536">คะแนน + คำที่ผิด</text>
+          <text class="t-arrow" x="28" y="460">แบบฝึกใหม่ · ฝึกซ้ำ</text>
+          <text class="t-arrow" x="161" y="334" text-anchor="middle">จบทางนี้ ไม่มีผลกับคะแนน</text>
+        </svg>
+      </div>
+      <figcaption>
+        เส้นทางบนซ้ายจบในตัวเอง — ข้อความจากการถอดเสียงสดใช้ไฮไลต์คำเท่านั้น เพราะผลระหว่างพูดยังเปลี่ยนไปมาได้
+        คะแนนจึงมาจาก Whisper และการวิเคราะห์สัญญาณล้วน ๆ ส่วนโมเดลภาษาเข้ามาทีหลังสุด
+        ทำหน้าที่อธิบายคะแนนที่คำนวณเสร็จแล้ว ไม่ใช่เป็นผู้ให้คะแนน
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>โมเดลที่ติดมากับ iOS</h2>
+      <p class="note">เรียกผ่าน platform channel ฝั่ง Swift ไม่มีน้ำหนักโมเดลอยู่ในแอป</p>
+    </div>
+
+    <div class="models">
+
+      <article class="model">
+        <div class="model-head">
+          <span class="chip os">อยู่ในระบบปฏิบัติการ</span>
+          <div class="model-title">
+            <h3>Apple Foundation Models</h3>
+            <span class="model-id">SystemLanguageModel.default · LanguageModelSession</span>
+          </div>
+        </div>
+        <dl class="specs">
+          <dt>ทำอะไร</dt>
+          <dd>สมองภาษาของแอปทั้งหมด — โค้ชภาษาไทย, สร้างแบบฝึกจากจุดอ่อน, ตรวจไวยากรณ์,
+              Copilot/SOS 3 ระดับความสุภาพ, สร้างชุดคำศัพท์, นำเข้าหนังสือจากภาพสแกน และสวมบทคู่สนทนาในโหมด Roleplay</dd>
+          <dt>ขนาด</dt>
+          <dd>0 ไบต์ — โมเดลอยู่ในระบบปฏิบัติการ ไม่ได้แพ็กมากับแอปและไม่ต้องโหลด</dd>
+          <dt>ควบคุมผลลัพธ์</dt>
+          <dd>ใช้ guided generation ผ่าน <code>DynamicGenerationSchema</code> → <code>GenerationSchema</code>
+              บังคับให้โมเดลตอบเป็น JSON ตามสคีมาที่กำหนด แทนการใช้ GBNF grammar</dd>
+          <dt>ต้องการ</dt>
+          <dd>iOS 26.0 ขึ้นไป · เครื่องที่รองรับ Apple Intelligence (iPhone 15 Pro ขึ้นไป) · ผู้ใช้เปิด Apple Intelligence ไว้</dd>
+          <dt>เมื่อใช้ไม่ได้</dt>
+          <dd>แอปแยกสาเหตุได้ 6 แบบ (<span class="mono">deviceNotEligible</span>, <span class="mono">appleIntelligenceNotEnabled</span>,
+              <span class="mono">modelNotReady</span>, <span class="mono">osTooOld</span> …) และบอกผู้ใช้เป็นภาษาไทยว่าติดตรงไหน
+              ส่วนโค้ชจะสลับไปใช้คำแนะนำแบบกฎล้วนที่คำนวณจากคะแนนแทน</dd>
+        </dl>
+        <p class="why"><b>ทำไมเลือกตัวนี้</b> — PRD เดิมกำหนด llama.cpp + GGUF ไว้ แต่เมื่อตัดสินใจไม่ทำฝั่ง Android
+          ข้อได้เปรียบหลักของ llama.cpp ก็หายไป Foundation Models ไม่ต้องโหลดน้ำหนักเพิ่มเลย
+          จึงไม่ไปแย่งทั้งพื้นที่และ RAM กับ Whisper ที่หนักอยู่แล้ว แลกกับการล็อกไว้ที่ iOS 26+</p>
+      </article>
+
+      <article class="model">
+        <div class="model-head">
+          <span class="chip os">อยู่ในระบบปฏิบัติการ</span>
+          <div class="model-title">
+            <h3>Apple Speech — ถอดเสียงสด</h3>
+            <span class="model-id">SFSpeechRecognizer · SFSpeechAudioBufferRecognitionRequest</span>
+          </div>
+        </div>
+        <dl class="specs">
+          <dt>ทำอะไร</dt>
+          <dd>ไฮไลต์คำแบบคาราโอเกะระหว่างผู้ใช้พูด และวัดระดับเสียงเป็นเส้นกราฟ (ส่งค่าไม่เกิน 20 ครั้ง/วินาที)</dd>
+          <dt>บังคับบนเครื่อง</dt>
+          <dd><code>requiresOnDeviceRecognition = true</code> และตรวจ <code>supportsOnDeviceRecognition</code> ก่อนเริ่มเสมอ
+              ถ้าภาษาไหนทำบนเครื่องไม่ได้ แอปเลือกที่จะ<strong>ไม่ถอดเสียงสด</strong> แทนการส่งเสียงขึ้นเซิร์ฟเวอร์ Apple</dd>
+          <dt>ภาษา</dt>
+          <dd><span class="mono">en-US · he-IL · zh-TW · zh-CN</span> และ <span class="mono">th-TH</span> สำหรับโหมด Copilot ที่ผู้ใช้พูดไทย</dd>
+          <dt>ข้อจำกัดที่ตั้งใจ</dt>
+          <dd>ข้อความจากการถอดเสียงสด<strong>ไม่เคยถูกใช้ให้คะแนน</strong> — คะแนนมาจาก Whisper เท่านั้น
+              เพราะผลแบบ partial ยังเปลี่ยนไปมาได้ตลอด</dd>
+        </dl>
+      </article>
+
+      <article class="model">
+        <div class="model-head">
+          <span class="chip os">อยู่ในระบบปฏิบัติการ</span>
+          <div class="model-title">
+            <h3>Vision — อ่านตัวอักษรจากภาพ</h3>
+            <span class="model-id">VNRecognizeTextRequest (currentRevision)</span>
+          </div>
+        </div>
+        <dl class="specs">
+          <dt>ทำอะไร</dt>
+          <dd>อ่านข้อความจากรูปถ่ายหนังสือเรียน แล้วส่งข้อความต่อให้ Foundation Models แปลงเป็นประโยคฝึกและบัตรคำศัพท์</dd>
+          <dt>ตั้งค่า</dt>
+          <dd><code>recognitionLevel = .accurate</code> · <code>usesLanguageCorrection = true</code>
+              พร้อมแปลง EXIF orientation เพื่อไม่ให้ภาพแนวตั้งถูกอ่านตะแคง</dd>
+          <dt>ภาษา</dt>
+          <dd>อังกฤษ <span class="mono">en-US</span> · ฮีบรู <span class="mono">he-IL</span> · จีนตัวเต็ม <span class="mono">zh-Hant</span> · จีนตัวย่อ <span class="mono">zh-Hans</span>
+              โดยกรองกับรายการที่เครื่องรองรับจริงก่อนทุกครั้ง</dd>
+          <dt>เมื่อใช้ไม่ได้</dt>
+          <dd>ถ้าเครื่องอ่านภาษาที่ขอไม่ได้ (พบบ่อยกับฮีบรู) จะถอยไปใช้ภาษารองแล้วติดธงเตือนผู้ใช้ว่าผลอาจไม่ตรง</dd>
+        </dl>
+      </article>
+
+      <article class="model">
+        <div class="model-head">
+          <span class="chip os">อยู่ในระบบปฏิบัติการ</span>
+          <div class="model-title">
+            <h3>AVSpeechSynthesizer — เสียงระบบ</h3>
+            <span class="model-id">AVSpeechSynthesisVoice · flutter_tts 4.2.5</span>
+          </div>
+        </div>
+        <dl class="specs">
+          <dt>ทำอะไร</dt>
+          <dd>สองงานที่ต่างกัน — อ่านประโยคให้ผู้ใช้ฟัง (พร้อม callback ระดับคำเพื่อไฮไลต์)
+              และสังเคราะห์ไฟล์เสียงอ้างอิงเพื่อเอาเส้นเสียงไปเทียบกับของผู้ใช้</dd>
+          <dt>ความเร็ว</dt>
+          <dd>ฟังปกติ 0.48 · ฟังช้า 0.30 (ค่า 0.5 คือความเร็วปกติของ iOS) ส่วนไฟล์อ้างอิงใช้ 0.5 และ 0.38</dd>
+          <dt>เลือกเสียง</dt>
+          <dd>จัดอันดับจากความตรงของ locale ก่อน แล้วค่อยดูคุณภาพเสียง <span class="mono">premium › enhanced › default</span>
+              และต้องตั้งเสียง<em>หลัง</em>ตั้งภาษาเสมอ เพราะ iOS ล้างค่าเสียงทิ้งเมื่อเปลี่ยนภาษา</dd>
+          <dt>ไฟล์อ้างอิง</dt>
+          <dd>เขียนเป็น WAV 16 kHz mono 16-bit ให้ตรงรูปแบบเดียวกับเสียงที่อัดจากผู้ใช้</dd>
+        </dl>
+      </article>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>โมเดลที่ดาวน์โหลดมาเก็บในเครื่อง</h2>
+      <p class="note">โหลดครั้งเดียวตอนใช้งานครั้งแรก แล้วรันในเครื่องตลอดไป</p>
+    </div>
+
+    <div class="models">
+
+      <article class="model">
+        <div class="model-head">
+          <span class="chip dl">ดาวน์โหลด · 488 MB</span>
+          <div class="model-title">
+            <h3>Whisper small (ggml)</h3>
+            <span class="model-id">whisper_ggml 2.4.0 · whisper.cpp · ggml-small.bin</span>
+          </div>
+        </div>
+        <dl class="specs">
+          <dt>ทำอะไร</dt>
+          <dd>ถอดเสียงผู้ใช้เป็นข้อความเพื่อนำไปให้คะแนนการออกเสียง — เป็นเส้นทางเดียวที่มีผลต่อคะแนน</dd>
+          <dt>รุ่นที่ใช้</dt>
+          <dd>ค่าเริ่มต้น <code>WhisperModel.small</code> แบบหลายภาษา เปลี่ยนเป็น <span class="mono">base</span> (148 MB)
+              หรือ <span class="mono">medium</span> (1,530 MB) ได้ในหน้าตั้งค่า —
+              รุ่น <span class="mono">.en</span> ที่รองรับเฉพาะอังกฤษถูกตัดออกตั้งแต่ต้น เพราะแอปต้องรองรับฮีบรูและจีน</dd>
+          <dt>โหลดจาก</dt>
+          <dd class="mono">huggingface.co/ggerganov/whisper.cpp</dd>
+          <dt>รูปแบบเสียง</dt>
+          <dd>WAV 16 kHz · mono · 16-bit ทั้งจากไมค์ผ่าน native bridge และจากตัวอัดสำรอง</dd>
+          <dt>ชี้นำภาษา</dt>
+          <dd>ส่ง language code <span class="mono">en · he · zh</span> และใช้ <code>initialPrompt</code>
+              บังคับตัวอักษรจีน — <span class="mono">以下是繁體中文的句子。</span> สำหรับตัวเต็ม และ
+              <span class="mono">以下是简体中文的句子。</span> สำหรับตัวย่อ เพราะโดยค่าเริ่มต้น Whisper ถอดออกมาเป็นตัวย่อเสมอ</dd>
+          <dt>ดาวน์โหลด</dt>
+          <dd>เขียนตัวโหลดแบบสตรีมเอง เขียนลงไฟล์ <span class="mono">.part</span> แล้วค่อยเปลี่ยนชื่อ
+              เพราะตัวโหลดที่มากับแพ็กเกจอมทั้งไฟล์ไว้ใน RAM และถูกระบบฆ่าทิ้งตอนโหลดรุ่น medium</dd>
+        </dl>
+        <p class="why"><b>ข้อจำกัดที่รู้อยู่</b> — Whisper ไม่รับรู้วรรณยุกต์ จึงต้องมีตัววิเคราะห์เสียงสูงต่ำแยกต่างหาก
+          และตัวมันเอง “แก้คำให้อัตโนมัติ” จนทำให้คะแนนความแม่นดูดีเกินจริง ตัวให้คะแนนจึงไม่เชื่อผลถอดเสียงเพียงอย่างเดียว</p>
+      </article>
+
+      <article class="model">
+        <div class="model-head">
+          <span class="chip dl">ดาวน์โหลด · ~125 MB</span>
+          <div class="model-title">
+            <h3>Kokoro int8 multi-lang v1.0</h3>
+            <span class="model-id">kokoro-int8-multi-lang-v1_0 · sherpa-onnx 1.13.5</span>
+          </div>
+        </div>
+        <dl class="specs">
+          <dt>ทำอะไร</dt>
+          <dd>เสียงพูดแบบโครงข่ายประสาท ใช้แทนเสียงระบบเมื่อผู้ใช้เลือก ให้ต้นแบบการออกเสียงที่เป็นธรรมชาติกว่า</dd>
+          <dt>ความละเอียด</dt>
+          <dd>quantize เป็น <strong>int8</strong> — เล็กกว่ารุ่นเต็มราว 3 เท่า โดยคุณภาพเสียงแทบไม่ต่าง</dd>
+          <dt>รันด้วย</dt>
+          <dd>ONNX Runtime บน CPU 2 threads ใน isolate แยก เพื่อไม่ให้การสังเคราะห์เสียงไปหน่วง UI</dd>
+          <dt>ขนาด</dt>
+          <dd>ดาวน์โหลด ~125 MB · หลังแตกไฟล์มากกว่า 300 MB เก็บใน Application Support (ไม่ใช่ Documents) เพื่อไม่ให้ถูกสำรองขึ้น iCloud</dd>
+          <dt>เสียงที่เปิดให้ใช้</dt>
+          <dd>15 เสียงจาก 53 เสียงในโมเดล — อังกฤษ 7 เสียง (อเมริกัน/บริติช) · จีนตัวเต็ม 4 · จีนตัวย่อ 4
+              โดยความเร็วลดเหลือ 0.7 เมื่อผู้ใช้กดฟังแบบช้า</dd>
+          <dt>ไม่รองรับ</dt>
+          <dd>ฮีบรู — โมเดลไม่มีทั้งเสียงและ G2P สำหรับภาษานี้ จึงตกไปใช้เสียงระบบเสมอ</dd>
+          <dt>ดาวน์โหลด</dt>
+          <dd>รองรับการโหลดต่อจากจุดเดิมด้วย HTTP Range retry ได้ 6 ครั้ง และแยกการโหลดออกจากอายุของหน้าจอ
+              ผู้ใช้จึงปิดหน้าต่างระหว่างโหลดได้โดยไม่ต้องเริ่มใหม่</dd>
+        </dl>
+      </article>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>ค่า temperature แยกตามฟีเจอร์</h2>
+      <p class="note">ทุกฟีเจอร์ใช้โมเดลตัวเดียวกัน แต่ตั้งค่าต่างกันตามสิ่งที่ต้องการ — ความแน่นอน หรือความหลากหลาย</p>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th>ฟีเจอร์</th><th>temperature</th><th>เหตุผล</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>ตรวจไวยากรณ์</td><td class="num">0</td><td class="dim">ต้องได้ผลเดิมทุกครั้ง ไม่งั้นเส้นใต้ที่ขีดคำผิดจะกระพริบไปมา</td></tr>
+          <tr><td>นำเข้าหนังสือจากภาพ</td><td class="num">0.2</td><td class="dim">ต้องตรงกับหน้าจริง สูงสุด 30 บัตรต่อหน้า</td></tr>
+          <tr><td>Copilot / SOS</td><td class="num">0.3</td><td class="dim">ประโยคช่วยเหลือควรถูกต้องมากกว่าสร้างสรรค์ ให้ 3 ระดับความสุภาพ</td></tr>
+          <tr><td>สร้างชุดคำศัพท์</td><td class="num">0.6</td><td class="dim">10 ใบต่อชุด ต้องการความหลากหลายพอสมควร</td></tr>
+          <tr><td>สร้างแบบฝึกจากจุดอ่อน</td><td class="num">0.8</td><td class="dim">ประโยคซ้ำเดิมทำให้ฝึกไม่ได้ผล — 3 ประโยค หรือ 5 เมื่อสร้างจากภาพสแกน</td></tr>
+          <tr><td>โค้ช · คู่สนทนา</td><td class="num dim">—</td><td class="dim">ข้อความอิสระ ไม่ตั้งค่า คุมด้วยคำสั่งระบบแทน (ตอบไทยเท่านั้น ไม่เกิน 4 ประโยค)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">ทุกงานที่ต้องการ JSON จะลองใหม่ 2 รอบ และลองเฉพาะกรณีที่โมเดลสร้างผลไม่สำเร็จเท่านั้น —
+      ถ้าสคีมาผิดหรือโมเดลใช้ไม่ได้ จะหยุดทันทีแทนการวนซ้ำเปล่า</p>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>ส่วนที่จงใจไม่ใช้ AI</h2>
+      <p class="note">การให้คะแนนออกเสียงทั้งหมดเป็นการคำนวณสัญญาณแบบกำหนดผลได้ ไม่มีโมเดลเข้ามาเกี่ยว</p>
+    </div>
+    <div class="models">
+      <article class="model">
+        <div class="model-head">
+          <span class="chip dsp">ไม่ใช่โมเดล · 0 MB</span>
+          <div class="model-title">
+            <h3>ชุดวิเคราะห์สัญญาณเสียง</h3>
+            <span class="model-id">YIN · PitchOutline · ToneAnalyzer · ProsodyAnalyzer · ScoringEngine</span>
+          </div>
+        </div>
+        <dl class="specs">
+          <dt>จับระดับเสียง</dt>
+          <dd>อัลกอริทึม YIN — window 768 · hop 160 · threshold 0.15 ผ่าน 4 ขั้น
+              (difference → cumulative mean → absolute threshold → parabolic interpolation) รันใน isolate แยก</dd>
+          <dt>เทียบทำนองเสียง</dt>
+          <dd>ย่อเส้นเสียงเหลือ 48 จุด แล้วเทียบกับไฟล์อ้างอิงแบบไม่สนระดับเสียงสูงต่ำโดยรวม
+              ผู้ใช้เสียงทุ้มหรือแหลมกว่าต้นแบบจึงไม่ถูกหักคะแนน</dd>
+          <dt>เทียบคำ</dt>
+          <dd>Levenshtein alignment ระหว่างคำที่ถอดได้กับประโยคเป้าหมาย</dd>
+          <dt>คำอ่านไทย</dt>
+          <dd>ใช้พจนานุกรมคำอ่านที่คัดเอง แทนการให้ LLM ถอดเสียงเป็นอักษรไทย ซึ่งไม่น่าเชื่อถือพอ</dd>
+        </dl>
+        <p class="why"><b>ทำไมไม่ใช้โมเดล</b> — คะแนนที่ผู้ใช้เห็นต้องอธิบายได้และต้องเท่าเดิมเมื่อพูดเหมือนเดิม
+          โมเดลภาษาให้ผลไม่คงที่พอสำหรับงานนี้ และ Whisper ก็ไม่รับรู้วรรณยุกต์ตั้งแต่แรก</p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>เมื่อโมเดลใช้ไม่ได้</h2>
+      <p class="note">ลำดับการถอย — ทุกขั้นมีทางลง ไม่มีขั้นไหนที่ตกไปเรียกเซิร์ฟเวอร์</p>
+    </div>
+
+    <figure>
+      <div class="fig-scroll">
+        <svg class="diagram d2" viewBox="0 0 940 215" role="img"
+             aria-label="แผนภาพ: เมื่อผู้ใช้กดฟังเสียง ระบบตรวจสามด่าน — ภาษานั้นรองรับไหม โหลดโมเดล Kokoro แล้วหรือยัง และสังเคราะห์สำเร็จไหม ถ้าผ่านทั้งสามจะได้เสียง Kokoro ถ้าตกด่านใดด่านหนึ่งจะตกไปที่เสียงระบบ AVSpeechSynthesizer เสมอ ผู้ใช้จึงได้ยินเสียงทุกครั้ง">
+          <defs>
+            <marker id="ar2" viewBox="0 0 8 8" refX="7" refY="4"
+                    markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L8,4 L0,8 z" class="head"/>
+            </marker>
+          </defs>
+
+          <path class="wire" d="M150,47 H190" marker-end="url(#ar2)"/>
+          <path class="wire" d="M350,47 H390" marker-end="url(#ar2)"/>
+          <path class="wire" d="M550,47 H590" marker-end="url(#ar2)"/>
+          <path class="wire" d="M750,47 H790" marker-end="url(#ar2)"/>
+
+          <path class="wire dash" d="M270,72 V118"/>
+          <path class="wire dash" d="M470,72 V118"/>
+          <path class="wire dash" d="M670,72 V118"/>
+          <path class="wire dash" d="M270,118 H860"/>
+          <path class="wire dash" d="M860,118 V145" marker-end="url(#ar2)"/>
+
+          <rect class="n n-plain" x="10" y="22" width="140" height="50" rx="3"/>
+          <text class="t" x="80" y="52" text-anchor="middle">กดฟังเสียง</text>
+
+          <rect class="n n-check" x="190" y="22" width="160" height="50" rx="3"/>
+          <text class="t" x="270" y="52" text-anchor="middle">รองรับภาษานี้?</text>
+
+          <rect class="n n-check" x="390" y="22" width="160" height="50" rx="3"/>
+          <text class="t" x="470" y="52" text-anchor="middle">โหลด Kokoro แล้ว?</text>
+
+          <rect class="n n-check" x="590" y="22" width="160" height="50" rx="3"/>
+          <text class="t" x="670" y="52" text-anchor="middle">สังเคราะห์สำเร็จ?</text>
+
+          <rect class="n n-dl" x="790" y="22" width="140" height="50" rx="3"/>
+          <text class="t" x="860" y="52" text-anchor="middle">เสียง Kokoro</text>
+
+          <rect class="n n-os" x="790" y="145" width="140" height="50" rx="3"/>
+          <text class="t" x="860" y="166" text-anchor="middle">เสียงระบบ</text>
+          <text class="t-sub" x="860" y="183" text-anchor="middle">AVSpeechSynthesizer</text>
+
+          <text class="t-arrow" x="370" y="38" text-anchor="middle">ใช่</text>
+          <text class="t-arrow" x="570" y="38" text-anchor="middle">ใช่</text>
+          <text class="t-arrow" x="770" y="38" text-anchor="middle">ใช่</text>
+          <text class="t-arrow" x="300" y="136">ฮีบรู · ยังไม่โหลด · สังเคราะห์ล้มเหลว</text>
+        </svg>
+      </div>
+      <figcaption>
+        ทางล้มเหลวทั้งสามลงที่เดียวกันและไม่มีการแจ้งเตือน ผู้ใช้จึงได้ยินเสียงเสมอ
+        แม้จะยังไม่เคยโหลดโมเดลเสียงเลยก็ตาม
+      </figcaption>
+    </figure>
+
+    <ol class="chain">
+      <li><span><b>Foundation Models ใช้ไม่ได้</b> <span class="arrow">→</span> โค้ชสลับไปใช้คำแนะนำแบบกฎที่คำนวณจากคะแนน ส่วนฟีเจอร์อื่นคืนค่าว่างพร้อมบอกสาเหตุเป็นภาษาไทย</span></li>
+      <li><span><b>โมเดลตอบผิดรูปแบบ</b> <span class="arrow">→</span> สคีมาการันตีโครงสร้างอยู่แล้ว แต่ยังกรองเนื้อหาซ้ำอีกชั้น ทั้งความยาวและความถูกต้องของตัวอักษรตามภาษา</span></li>
+      <li><span><b>ถอดเสียงสดบนเครื่องไม่ได้</b> <span class="arrow">→</span> อัดอย่างเดียว ไม่มีข้อความขึ้นระหว่างพูด แต่คะแนนยังได้ครบจาก Whisper</span></li>
+      <li><span><b>เปิดไมค์ผ่าน native ไม่ได้</b> <span class="arrow">→</span> ใช้ตัวอัดสำรอง ซึ่งเขียนไฟล์รูปแบบเดียวกันเป๊ะ</span></li>
+      <li><span><b>Kokoro ไม่พร้อมหรือไม่รองรับภาษานั้น</b> <span class="arrow">→</span> ใช้เสียงระบบแทนโดยไม่แจ้งเตือน ผู้ใช้ยังได้ยินเสียงเสมอ</span></li>
+      <li><span><b>ยังไม่มีไฟล์ Whisper</b> <span class="arrow">→</span> โหลดอัตโนมัติเมื่อเข้าหน้าฝึกครั้งแรก เขียนลงไฟล์ชั่วคราวแล้วเปลี่ยนชื่อเมื่อครบ ไฟล์ครึ่ง ๆ กลาง ๆ จึงไม่ถูกใช้</span></li>
+      <li><span><b>Vision อ่านภาษาที่ขอไม่ได้</b> <span class="arrow">→</span> ถอยไปใช้ภาษารอง แล้วบอกผู้ใช้ว่าผลอาจไม่ตรง</span></li>
+      <li><span><b>ไม่มี native bridge เลย</b> (เทสต์ / เดสก์ท็อป) <span class="arrow">→</span> ทุกจุดคืนค่าว่างอย่างสงบ ไม่โยน error ทิ้งทั้งแอป</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>เงื่อนไขเครื่อง</h2>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th>รายการ</th><th>ค่า</th><th>มาจาก</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>iOS ขั้นต่ำของแอป</td><td class="num">26.0</td><td class="dim">Foundation Models ต้องการ iOS 26</td></tr>
+          <tr><td>ชิป</td><td class="dim">iPhone 15 Pro ขึ้นไป</td><td class="dim">เงื่อนไขของ Apple Intelligence</td></tr>
+          <tr><td>iOS ขั้นต่ำของ pod</td><td class="num">15.6</td><td class="dim">เงื่อนไขของ whisper_ggml</td></tr>
+          <tr><td>เครื่องมือ build</td><td class="dim">Xcode 26 ขึ้นไป</td><td class="dim">ต้องมี FoundationModels SDK ตอนคอมไพล์</td></tr>
+          <tr><td>Android</td><td class="dim">ไม่รองรับ</td><td class="dim">bridge ทุกตัวเขียนฝั่ง iOS อย่างเดียว</td></tr>
+          <tr><td>พื้นที่เมื่อโหลดครบ</td><td class="num">~613 MB</td><td class="dim">Whisper small + Kokoro (แตกไฟล์แล้วใช้มากกว่านี้)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">คำขออนุญาตทั้งสี่รายการใน Info.plist — กล้อง ไมโครโฟน คลังรูป และการรู้จำเสียงพูด —
+      ระบุไว้ชัดเจนว่าประมวลผลบนเครื่องเท่านั้น</p>
+  </section>
+
+  <footer>
+    เอกสารนี้อธิบายสแตกโมเดลตามโค้ดที่อยู่ใน repo ปัจจุบัน · ปรับปรุง 14 สิงหาคม 2569
+  </footer>
+
+</div>
+</body>
+</html>
